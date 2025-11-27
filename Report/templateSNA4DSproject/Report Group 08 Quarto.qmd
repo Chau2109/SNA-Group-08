@@ -1,0 +1,556 @@
+---
+title: SNA4DS Project - Report Submission 2
+subtitle: Group 08
+date: 2025-11-14
+
+
+author: 
+  - name: Leon Boeren - Noud van Summeren - Chau Nguyen - Paritosh Singh - Silvia Petrova
+
+    
+affiliations:
+  - id: jads
+    name: Jheronimus Academy of Data Science
+  - id: tiu
+    name: Tilburg University
+  - id: tue
+    name: Eindhoven University of Technology
+include-in-header:
+  - text: |
+      \usepackage{longtable}
+      \usepackage{graphicx}
+      \usepackage{booktabs}
+      \usepackage{dcolumn}
+      \usepackage{float}
+      \usepackage{array}
+      \usepackage{longtable}  
+      \setlength{\parskip}{1.2em}
+      
+bibliography: SNA project.bib
+csl: apa-6th-edition.csl
+toc: true
+toc-depth: 2
+format:
+   pdf:
+    documentclass: article
+    pagesize: a4
+    number-sections: true
+    df-print: kable
+    fig-cap-location: top
+    geometry:
+      - left=1in
+      - right=1in
+      - top=1.1in
+      - bottom=1.1in
+      - heightrounded
+    linestretch: 1.28
+    
+execute:
+    echo: false
+editor: 
+  markdown: 
+    wrap: 90
+---
+
+```{r}
+#| label: analysis-preferences
+#| include: false
+
+# Seed for random number generation
+set.seed(42)
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+```
+
+{{< pagebreak >}}
+
+## Glossary
+
+::: {#sec-gloss}
+\setlength{\arrayrulewidth}{0.05pt}
+\begin{longtable}{p{0.28\textwidth} p{0.68\textwidth}}
+\caption{Definitions of Key Terms}
+\label{tab:key-terms-wgi} \\
+\hline
+\textbf{Term} & \textbf{Definition} \\
+\hline
+\endfirsthead
+
+\hline
+\textbf{Term} & \textbf{Definition} \\
+\hline
+\endhead
+
+\hline
+\endfoot
+
+\hline
+\endlastfoot
+
+Bilateral Trade 
+&
+Trade between two specific countries, measured as exports from one to the other and vice versa. \\
+\hline
+
+Export value 
+&
+The total monetary value of goods and services sold by one country to another, measured in U.S. dollars. \\
+\hline
+
+Macroeconomic Stability 
+&
+The condition in which a country experiences low inflation, steady growth, and minimal fiscal or external imbalances. \\
+\hline
+
+Institutional Similarity 
+&
+The degree to which countries share similar governance qualities, such as rule of law, corruption control, and regulatory quality. \\
+\hline
+
+Worldwide Governance Indicators (WGI) 
+&
+Quantitative measures developed by the World Bank to assess broad patterns in perceptions of the quality of governance across countries and over time. The WGI reports governance indicators for over 200 countries and territories for six dimensions of governance: Voice and Accountability; Political Stability and Absence of Violence/Terrorism; Government Effectiveness; Regulatory Quality; Rule of Law; Control of Corruption. \\
+\hline
+
+Government Effectiveness: Estimate 
+&
+Government Effectiveness captures perceptions of the quality of public services, the quality of the civil service and the degree of its independence from political pressures, the quality of policy formulation and implementation, and the credibility of the government's commitment to such policies. Estimate gives the country's score on the aggregate indicator, in units of a standard normal distribution, i.e. ranging from approximately -2.5 to 2.5. \\
+\hline
+
+Regulatory Quality: Estimate 
+&
+Regulatory Quality captures perceptions of the ability of the government to formulate and implement sound policies and regulations that permit and promote private sector development. Estimate gives the country's score on the aggregate indicator, in units of a standard normal distribution, i.e. ranging from approximately -2.5 to 2.5. \\
+\hline
+
+Rule of Law: Estimate 
+&
+Rule of Law captures perceptions of the extent to which agents have confidence in and abide by the rules of society, and in particular the quality of contract enforcement, property rights, the police, and the courts, as well as the likelihood of crime and violence. Estimate gives the country's score on the aggregate indicator, in units of a standard normal distribution, i.e. ranging from approximately -2.5 to 2.5. \\
+\hline
+
+Control of Corruption: Estimate 
+&
+Control of Corruption captures perceptions of the extent to which public power is exercised for private gain, including both petty and grand forms of corruption, as well as "capture" of the state by elites and private interests. Estimate gives the country's score on the aggregate indicator, in units of a standard normal distribution, i.e. ranging from approximately -2.5 to 2.5. \\
+\hline
+
+\end{longtable}
+:::
+
+## Abstract
+
+Chau What is the main topic you are addressing? What are your research
+questions and hypotheses? What are your results and the main conclusion?
+
+## Introduction
+
+### Common Ground: The Relationship Between Governance and Trade
+
+The global trade network is a core foundation of the modern economy, enabling countries to
+exchange goods, services, and capital in ways that drive productivity and long-term
+growth. International trade is shaped not only by economic fundamentals but also by the
+governance environments in which countries operate. Understanding how governance
+similarity shapes bilateral trade is essential, as institutional alignment can enhance
+regulatory predictability and foster trust, thereby amplifying trade volumes and
+strengthening economic integration. This research specifically investigates how governance
+similarity between nations influences the strength of their bilateral trade relations.
+
+Building on evidence that institutional quality, corruption control, and regulatory
+effectiveness significantly shape trade performance, this study applies the Multiple
+Regression Quadratic Assignment Procedure (MRQAP) and the Generalized Exponential Random
+Graph Model (GERGM) to capture structural interdependencies and trade intensity within the
+global trade network. By modeling trade as a weighted network, this research provides a
+more accurate understanding of how governance characteristics shape the magnitude of
+international trade flows, addressing gaps left by prior network analyses.
+
+Empirical studies consistently demonstrate that governance conditions affect bilateral
+trade costs and export performance. Evidence from [@de_groot_institutional_2004] shows
+that countries with similar institutional frameworks trade approximately 13% more with
+each other, while improvements in overall institutional quality can increase bilateral
+trade volumes by 30–44%. Research from [@sabry_arab-german_2022], examining Arab exports
+to Germany, similarly finds that regulatory quality and government effectiveness drive
+export performance, although the magnitude of these effects varies across regions and
+industries, such as textiles. Likewise, [@landry_does_2024] reports that improvements in
+corruption control and democratic governance increase African exports to Western partners,
+but do not produce the same effect in trade with China.
+
+Further evidence reinforces these governance effects.
+[@university_of_economic_studies_bucharest_romania_governance_2021] using an augmented
+gravity model for Romanian–EU trade, finds that regulatory quality has the strongest
+positive impact on exports, while weak institutional performance limits deeper trade
+integration. [@didier_characterising_2021] documents asymmetric governance effects in
+Sub-Saharan African trade with China: stronger governance enhances Chinese exports to
+Africa, whereas weaker governance, particularly higher corruption, can facilitate African
+exports to China.
+
+### Complication: The Network Structure Problem
+
+Despite this evidence, most studies rely on gravity models that assume independence across
+trade pairs and overlook interdependencies in the global trade network, such as
+reciprocity, clustering, and transitivity. To address this, recent research has adopted
+Exponential Random Graph Models (ERGMs), which explicitly account for relational
+dependencies and allow structural, political, and economic factors to be assessed
+simultaneously [@noauthor_inferential_nodate; @schweitzer_economic_2009]. For example,
+[@noauthor_analysis_nodate] applies ERGMs to the global wheat trade and shows that
+reciprocity, GDP, and geographic proximity shape tie formation, while
+[@setayesh_analysis_2022] finds that GDP, distance, diplomatic exchanges, and landlocked
+status influence trade relations, with transitivity adding explanatory power beyond dyadic
+predictors.
+
+However, existing ERGM applications often rely on backbone extraction methods such as the
+disparity filter [@serrano_extracting_2009] to convert weighted networks to binary ones.
+While this simplifies estimation, it discards important information on trade intensity,
+limiting the detection of variation in export strength and obscuring key patterns of
+economic interdependence, especially among closely integrated or institutionally aligned
+countries. As [@setayesh_analysis_2022] note, studies should “observe the global trade
+network as a weighted network without applying backbone methods” to capture both the
+presence and magnitude of trade ties accurately.
+
+### Concern
+
+To address this gap, the present study employs GERGM, developed by
+[@desmarais_statistical_2012], which extends ERGM methodology to networks with
+continuous-valued edges. GERGM models endogenous network dependencies, including
+reciprocity, transitivity, and clustering, while incorporating edge weights that represent
+trade intensity. This approach enables a comprehensive representation of the global trade
+system as both structurally interdependent and quantitatively differentiated, capturing
+not only whether trade ties exist but also their relative economic significance.
+Additionally, most prior research focuses on region- or sector-specific cases, limiting
+global generalizability, and governance is commonly proxied using World Bank indicators,
+introducing variation that may affect comparability and interpretation.
+
+Therefore, the challenge is to develop a modeling approach that simultaneously:
+
+-   Captures structural network dependencies, including reciprocity, transitivity, and
+    clustering;
+-   Preserves trade intensity information through weighted edges;
+-   Incorporates country-level governance attributes;
+-   Tests the role of institutional similarity in shaping trade patterns.
+
+Based on these considerations, the present study addresses two main research questions.
+First, it examines how countries’ governance characteristics influence the intensity of
+their bilateral trade relationships. Second, it investigates how governance similarity,
+along with network structural interdependencies, such as reciprocal exchange and clustered
+trading patterns, shapes the overall configuration of global export ties, thereby
+capturing the interdependent nature of the international trade network. For the purposes
+of this study, the analysis focuses on four dimensions that are most directly relevant to
+economic and institutional indicators of trade: Government Effectiveness, Regulatory
+Quality, Rule of Law, and Control of Corruption, while excluding Voice and Accountability
+and Political Stability and Absence of Violence/Terrorism, which fall outside the scope of
+the research.
+
+**Research Question 1:** How do similarities in governance characteristics between country
+pairs influence the intensity of their bilateral trade relationships?
+
+1.  **Hypotheses H1a:** Countries with more similar levels of regulatory quality engage in
+    higher-value bilateral trade.
+
+2.  **Hypothesis H2a:** Countries with more similar levels of corruption control engage in
+    higher-value bilateral trade.
+
+When countries share comparable institutional frameworks, firms face lower coordination
+and enforcement costs through contract negotiation and dispute resolution, according to
+[@francois_institutions_2013; @dixit_lawlessness_2011], reducing transaction frictions and
+enabling greater private-sector participation in cross-border markets. Because regulatory
+quality reflects a government’s capacity to design and implement policies that support
+private-sector development, institutional similarity is expected not only to increase the
+likelihood of trade relationships emerging but also to enhance the intensity of existing
+trade flows. By lowering firms’ adaptation costs when entering foreign markets, similar
+regulatory environments facilitate deeper export integration, forming the basis for
+*Hypothesis H1a* and *Hypothesis H1b.*
+
+As noted in the [@shleifer_corruption_1993], firms also face lower enforcement costs when
+corruption levels and rule-of-law standards are comparable, reducing uncertainty about
+contract enforcement and thereby improving trade potential, motivating *Hypothesis H2a*.
+Likewise, similarity in the rule of law reduces legal uncertainty in cross-border
+transactions and mitigates the negative effects of weak contract enforcement on trade
+flows [@de_groot_institutional_2004; @noauthor_role_nodate]. When both trading partners
+have comparable legal systems, including strong contract enforcement and effective
+property rights protection, firms can confidently enter into long-term trade relationships
+and make relationship-specific investments, supporting *Hypothesis H2a* and *Hypothesis*
+*H2b*.
+
+**Research Question 2:** How do similarities in governance quality and the broader
+patterns of interdependence among trading partners influence the formation and intensity
+of bilateral export relationships across countries in the global economy?
+
+1.  **Hypotheses H1b:** Countries with more similar levels of regulatory quality are
+    expected to engage in higher-value bilateral trade
+
+2.  **Hypothesis H2b:** Countries with more similar rule‐of‐law conditions are expected to
+    engage in higher-value bilateral trade
+
+3.  **Hypothesis H3b:** Bilateral export relationships are expected to display
+    reciprocity, such that higher export volumes from one country to its trading partner
+    are associated with higher export volumes received in return from that partner.
+
+4.  **Hypothesis H4b:** Trade relationships exhibit transitivity, where countries are more
+    likely to trade intensively with partners of their existing trading partners,
+    resulting in clustered patterns of export ties
+
+5.  **Hypothesis H5b:** Countries that already receive high levels of imports from many
+    partners are likely to become attractive trade destinations, making others more likely
+    to export to them
+
+Trade networks are not random but exhibit systematic structural patterns driven by
+economic, political, and strategic considerations. One key structural feature of trade
+networks is reciprocity, which reflects the tendency for countries to return export flows
+received from their partners [@setayesh_analysis_2022]. Reciprocal trade emerges through
+several channels, including diplomatic norms, bilateral or regional trade agreements, and
+mutual economic interdependence, all of which encourage balanced exchange rather than
+one-sided trade flows. Research from [@noauthor_make_nodate] shows that mutual economic
+dependence creates incentives for countries to maintain stable, reciprocal trade
+relationships, as disruptions would harm both partners. Together, these studies provide
+the theoretical foundation for *Hypothesis H3b*.
+
+Clustering patterns are another important determinant of trade network structure,
+motivating *Hypothesis H4b*. Countries within regional trade blocs (e.g., EU, ASEAN,
+NAFTA) develop dense, interconnected trade relationships through harmonized regulations
+and reduced non-tariff barriers [@de_groot_institutional_2004; @noauthor_pdf_2025-1],
+which transitive closure is significant in service trade networks [@feng_service_2021].
+Additionally, large import markets create economies of scale for exporters, justifying the
+fixed costs of market entry. As a result, exporters prioritize these markets, leading to a
+concentration of trade ties on high-import countries, which explains the logic behind the
+core-periphery structure [@noauthor_patterns_nodate; @setayesh_analysis_2022]. This
+research highlights the highly heterogeneous nature of trade connections and demonstrates
+that network degree and centrality patterns matter, as a small number of countries act as
+major hubs, holding a disproportionately large share of global trade flows. Consequently,
+the concentration of trade ties on large import markets supports *Hypothesis H5b*.
+
+Understanding these structural patterns is essential because they reflect systemic forces
+that operate beyond bilateral or single-country characteristics, shaping the overall
+architecture of the global trade.
+
+\setlength{\arrayrulewidth}{0.05pt}
+\begin{longtable}{p{0.27\textwidth} p{0.29\textwidth} p{0.40\textwidth}}
+\caption{Hypotheses, Model Terms, and Theoretical Motivation}
+\label{tab:hypo_summary} \\
+\hline
+\textbf{Hypothesis} & \textbf{GERGM Term} & \textbf{Motivation} \\
+\hline
+\endfirsthead
+
+\hline
+\textbf{Hypothesis} & \textbf{GERGM Term} & \textbf{Motivation} \\
+\hline
+\endhead
+
+\hline
+\endfoot
+
+\hline
+\endlastfoot
+
+\textbf{H1b: Regulatory Quality Similarity}  
+Countries with more similar levels of regulatory quality are expected to engage in higher-value bilateral trade
+&
+\texttt{absdiff(regulatory\_quality)}
+&
+The \texttt{absdiff(regulatory\_quality)} term captures the tendency for countries with similar regulatory frameworks to form higher-value trade relationships. Similar regulatory standards reduce compliance costs, streamline approval processes, and increase operational compatibility, facilitating valuable bilateral trade
+\\
+\hline
+
+\textbf{H2b: Rule of Law Similarity}  
+Countries with more similar rule‐of‐law conditions are expected to engage in higher-value bilateral trade
+&
+\texttt{absdiff(rule\_of\_law)}
+&
+The \texttt{absdiff(rule\_of\_law)} term captures how similar institutions reduce transaction costs through aligned contract enforcement, shared regulatory standards, and comparable property rights protections, facilitating high-value trade flows
+\\
+\hline
+
+\textbf{H3b: Reciprocity}  
+Bilateral export relationships are expected to display reciprocity, such that higher export volumes from one country to its trading partner are associated with higher export volumes received in return from that partner
+&
+\texttt{mutual(alpha = 0.8)}
+&
+The \texttt{mutual(alpha = 0.8)} term captures the tendency for bilateral trade relationships to exhibit reciprocity, whereby higher export flows from one country are associated with higher return flows from its trading partner. Reciprocal trade reflects balanced exchange and mutual commitment, reducing asymmetric dependence and fostering more stable and sustainable trading relationships than those based on one-sided export flows
+\\
+\hline
+
+\textbf{H4b: Transitivity}  
+Trade relationships exhibit transitivity, where countries are more likely to trade intensively with partners of their existing trading partners, resulting in clustered patterns of export ties
+&
+\texttt{ctriads(alpha = 0.8)}
+&
+The \texttt{ctriads(alpha = 0.8)} term captures the tendency for triadic closure in trade networks, in which countries sharing a common trading partner are more likely to trade intensively with each other. Shared partners reduce information asymmetries and search costs, facilitating clustered export patterns
+\\
+\hline
+
+\textbf{H5b: Popularity}  
+Countries that already receive high levels of imports from many partners are likely to become attractive trade destinations, making others more likely to export to them
+&
+\texttt{receiver("total\_imports")}
+&
+The \texttt{receiver("total\_imports")} term captures the tendency for countries with high import volumes to attract additional export ties. Large import markets signal strong demand and institutional reliability, lowering perceived risks for new exporters and generating self-reinforcing patterns in which highly connected import destinations continue to receive a disproportionate share of global exports
+\\
+\hline
+
+\end{longtable}
+
+***Control Variables:***
+
+-   *GDP (current USD)*: Economic size is a central determinant of a country’s trade
+    capacity, as consistently demonstrated in gravity-model research
+    [@leitao_gravity_2024]. Larger economies tend to produce a greater volume and
+    diversity of exportable goods while also generating higher import demand. Including
+    GDP as a control variable accounts for these scale effects, allowing the analysis to
+    isolate the contribution of governance similarity to trade intensity.
+
+-   *Inflation Rate*: Elevated inflation can reduce export competitiveness and increase
+    uncertainty in cross-border transactions. Controlling for inflation ensures that the
+    estimated governance effects are not confounded by broader macroeconomic volatility.
+
+### Connection to Previous Work and Contribution
+
+Understanding how governance similarity shapes both the formation and intensity of trade
+relationships has significant theoretical and policy implications. Institutional
+similarity not only increases the likelihood of trade but also amplifies trade volumes,
+indicating that policies promoting convergence, such as regulatory harmonization,
+anti-corruption cooperation, or system alignment, may yield greater economic benefits than
+previously recognized. Trade agreements with enforceable governance provisions can
+facilitate deeper economic integration beyond tariff reduction [@horn_beyond_2010].
+
+Second, if governance similarity strengthens reciprocity or clustering, the global trade
+system may display path-dependent dynamics, where countries outside these communities face
+higher barriers to integration due to network position and institutional distance rather
+than formal trade restrictions [@noauthor_role_nodate]. This suggests to policymakers that
+institutional convergence offers benefits beyond simply lowering transaction costs. It
+enables countries to establish stronger and more resilient trade relationships within the
+global economy. By aligning their institutional frameworks, countries can position
+themselves more advantageously within the broader architecture of international trade.
+
+Third, theoretically, incorporating institutional similarity into network models provides
+a fuller understanding of global economic structures. Rather than viewing institutions
+solely as bilateral friction reducers, this approach recognizes that institutions operate
+within a complex, interdependent system where governance similarity affects not just
+dyadic trade but the entire configuration of the trade network.
+
+The remaining structure of the report is organized into four main sections. The Dataset
+section outlines the sources, construction, and characteristics of the trade and
+governance data, including relevant network configurations. The Research Rationale section
+explains why the selected modelling approaches: MRQAP and GERGM, are well suited to the
+research questions and discusses potential alternative methods. The Results section
+presents and interprets the empirical findings from these models, comparing and evaluating
+the outcome in relation to the proposed hypotheses. Finally, the Conclusion provides the
+insights from the findings, highlights remaining challenges, and suggests paths for future
+research.
+
+## Dataset
+
+Copy this part from Report Submission 1 on Google Drive and Adjust based on Feedback by
+Claudia - **Paritosh**
+
+## Research Rationale
+
+In line with recent research on trade networks, we draw on studies that employ the
+Multiple Regression Quadratic Assignment Procedure (MRQAP) to analyze bilateral trade
+flows. For example, [@noauthor_structural_nodate] use MRQAP to identify the economic,
+geographic, and logistical drivers of EU lithium-ion battery trade, while
+[@hu_impacts_2023] apply the method to the global rare-earths trade network, demonstrating
+that factors such as economic scale, geographical contiguity, and institutional distance
+shape dyadic trading patterns. Following this literature, we adopt MRQAP to model our
+trade network. MRQAP is particularly suitable because our data are network-based,
+representing trade between pairs of countries. Observations are interdependent, as trade
+relations are interconnected. Traditional regression methods cannot accommodate such
+dependencies, but MRQAP corrects for them using permutation tests, providing statistically
+valid results while including dyadic predictors such as GDP, inflation, and governance
+quality.
+
+The international trade network examined in this study consists of directed, weighted
+ties, with each edge representing the value of exports from one country to another. This
+structure captures both the presence and intensity of trade. Traditional Exponential
+Random Graph Models (ERGMs) are well-suited for modeling network dependencies, but they
+treat ties as binary, obscuring the magnitude of trade relationships. Because trade
+intensity is central to understanding economic interdependence, backbone reduction or
+binarization would result in substantial information loss. Consequently, the dataset
+requires a modeling framework that retains continuous edge weights while simultaneously
+capturing the endogenous structure of the global trade network.
+
+### Suitability of MRQAP and GERGM
+
+MRQAP is appropriate for our research questions because it evaluates how similarities or
+differences in country attributes, such as economic performance or governance quality,
+affect the strength of bilateral trade ties. It models the export network as a function of
+dyadic similarities, showing whether countries with comparable characteristics trade more.
+By accounting for network dependencies, MRQAP provides accurate insights into how
+governance and economic factors shape global trade connections. Since RQ1 focuses on
+attribute-based relationships rather than structural dependencies, MRQAP is particularly
+suitable.
+
+The Generalized Exponential Random Graph Model (GERGM) extends ERGM methodology to
+continuous-valued networks, allowing weighted export flows to be analyzed while
+simultaneously estimating structural network effects and country-level attributes such as
+governance quality and macroeconomic conditions. GERGM is therefore well-suited to examine
+how governance similarity, reciprocity, clustering, and popularity jointly shape both the
+formation and intensity of export relationships. By preserving the full distribution of
+trade values, GERGM provides a more realistic representation of the global trade system
+than binary ERGMs, offering deeper insight into the interaction between institutional and
+structural factors.
+
+### Comparison to Alternative Methods
+
+Traditional gravity models estimated via ordinary least squares (OLS) or Poisson
+pseudo-maximum likelihood (PPML) are commonly used to study governance similarity and
+trade. However, they assume that dyads are independent, an assumption that fails in
+networked systems where reciprocity, shared partners, and clustering influence trade
+patterns [@noauthor_inferential_nodate]. While governance similarity can be included in
+gravity models, these models cannot account for endogenous dependencies or the interplay
+between governance and network structure, and network autocorrelation can bias standard
+errors [@fagiolo_international-trade_2009]. Standard ERGMs combined with binary backbone
+extraction similarly discard trade intensity, depend on arbitrary filtering thresholds,
+and cannot address our research questions, which concerns variation in trade magnitude
+[@serrano_extracting_2009; @setayesh_analysis_2022].
+
+In contrast, MRQAP is well-suited for testing attribute-based hypotheses, maintaining
+dyadic trade values while accounting for network dependence via permutation-based
+inference [@noauthor_sensitivity_nodate]. GERGM extends this by modeling continuous trade
+weights alongside structural characteristics such as popularity, reciprocity, and
+clustering. Together, these methods provide a theoretically coherent framework that
+integrates network dynamics and governance effects, offering a more complete and precise
+analysis of international trade patterns than alternative approaches.
+
+## Results (1300 words)
+
+-   View the SNA4DS template for reference how to add Code Block to write this part
+    properly
+
+### MRQAP – 2 POINTS  - Silvia + Paritosh
+Combine to 1 model 
+Present your results appropriately (plots, tables…) and discuss your findings in plain
+English Discuss the meaning of your findings in relation to your hypothesis.
+
+
+
+### ERGM – 2.5 POINTS - Chau + Leon
+
+Present your results appropriately (plots, tables…) and discuss your findings in plain
+English Discuss the meaning of your findings in relation to your hypothesis.
+
+## Conclusion (1000 words)
+
+-   What were your topic and research questions again? 1 sentence only
+
+    What did you learn from the two analyses you run? Most important point to address 0.5
+    POINTS - Noud
+
+-   Who benefits from your findings? Noud
+
+-   What remains an open problem? Noud
+
+-    Can you give suggestions for future work in this area? Leon
+
+## References {.unnumbered}
+
+::: {#refs}
+:::
+
+{{< pagebreak >}}
+
+## Technology statement
+
+During the preparation of this work, we used **ChatGPT** to **check spelling, grammar,
+coherence, syntax and support our brainstorming process**. The sections affected by the
+use of this tool include the **Introduction** and the **Research Rationale**. All outputs
+generated by ChatGPT were critically reviewed, validated, and edited by **Group 08 (Leon
+Boeren - Noud van Summeren - Chau Nguyen - Paritosh Singh - Silvia Petrova)** to ensure
+accuracy and academic integrity. **Group 08** assumes full responsibility for the final
+content of this work.
+
