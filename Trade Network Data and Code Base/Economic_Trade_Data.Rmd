@@ -328,8 +328,8 @@ mod0 <- sna::netlm(
   reps      = 5000
 )
 mod0$names <- c("Intercept", "GDP_mean")
-summary(mod0)
 
+summary(mod0)
 
 mod1 <- sna::netlm(
   y         = trade_matrix_mrqap,
