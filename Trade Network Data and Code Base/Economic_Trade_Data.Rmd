@@ -417,8 +417,21 @@ mod_H1a_H2a$names <- c(
 summary(mod_H1a_H2a)
 
 ```
+```{r}
+# After all models have been fitted:
+saveRDS(mod0,         "models/mod0.rds")
+saveRDS(mod1,         "models/mod1.rds")
+saveRDS(mod_H1a,      "models/mod_H1a.rds")
+saveRDS(mod_H1a_H2a,  "models/mod_H1a_H2a.rds")
+```
 
+```{r}
+m_test <- readRDS("models/mod_H1a_H2a.rds")
+class(m_test)
 
+m_test <- readRDS("models/mod_H1a_H2a.rds")
+names(m_test)
+```
 
 ```{r}
 # GERGM

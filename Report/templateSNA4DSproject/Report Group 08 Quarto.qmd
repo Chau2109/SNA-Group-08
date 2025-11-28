@@ -53,6 +53,20 @@ editor:
 ---
 
 ```{r}
+#| label: load-mrqap-models
+#| include: false
+
+library(tibble)
+library(dplyr)
+library(ggplot2)
+
+mod0        <- readRDS("models/mod0.rds")
+mod1        <- readRDS("models/mod1.rds")
+mod_H1a     <- readRDS("models/mod_H1a.rds")
+mod_H1a_H2a <- readRDS("models/mod_H1a_H2a.rds")
+```
+
+```{r}
 #| label: analysis-preferences
 #| include: false
 
@@ -136,8 +150,8 @@ Control of Corruption captures perceptions of the extent to which public power i
 
 ## Abstract
 
-Chau What is the main topic you are addressing? What are your research
-questions and hypotheses? What are your results and the main conclusion?
+Chau What is the main topic you are addressing? What are your research questions and
+hypotheses? What are your results and the main conclusion?
 
 ## Introduction
 
@@ -435,8 +449,172 @@ research.
 
 ## Dataset
 
-Copy this part from Report Submission 1 on Google Drive and Adjust based on Feedback by
-Claudia - **Paritosh**
+### Dataset collection
+
+This research combines multiple datasets that capture international trade flows, trade
+facilitation indicators, economic development, and governance quality across countries.
+
+#### Primary Dataset
+
+The primary dataset used is the International Trade Database obtained from Kaggle, which
+is compiled from UN Comtrade through the World Integrated Trade Solution (WITS) platform.
+UN Comtrade is the official repository of international trade statistics, maintained by
+the United Nations Statistics Division (UNSD), and serves governments, academia, and
+research institutions worldwide [@uncomtrade_2025]. It covers more than 99% of the world’s
+merchandise trade and provides country-reported data on international trade flows.
+
+The dataset contains annual export values (measured in thousands of U.S. dollars) from
+1988 to 2021, recording exports from a reporting country *i* to a partner country *j* in
+year *t*. Each observation represents the total export value of all goods shipped from
+country *i* to country *j* in a given year. For this study, the analysis focuses on data
+from 2018, the year immediately preceding the COVID-19 pandemic, as it ensures the widest
+data availability and comparability across countries in terms of governance, economic
+performance, and trade facilitation indicators prior to the global disruptions of the
+pandemic.
+
+#### Supplementary Data
+
+Sources To complement the trade network with country-level attributes, three supplementary
+datasets from the World Bank’s open data repositories were integrated, all extracted for
+the year 2018.
+
+1.  The Doing Business Indicators (DBI) provide detailed measures of trade facilitation
+    [@worldbank_dbi_2020]. This dataset includes information on border and documentary
+    compliance times and costs for both imports and exports, as well as the overall
+    *Trading Across Borders* score. These indicators reflect the efficiency and costliness
+    of customs procedures and border management in each country.
+
+2.  The World Development Indicators (WDI) contain key macroeconomic measures such as GDP
+    (current USD), GDP growth rate, and inflation rate [@worldbank_wdi_2025]. These
+    indicators offer insights into each country’s level of economic development,
+    performance, and stability.
+
+3.  The Worldwide Governance Indicators (WGI) capture institutional quality across several
+    governance dimensions, including government effectiveness, regulatory quality, rule of
+    law, and control of corruption [@worldbank_wgi_2024]. These measures describe the
+    strength of governance systems that may influence trade relationships, institutional
+    reliability, and policy effectiveness.
+
+### Data Integration and cleaning
+
+All datasets were joined using the country code (ISO3) as the unique key identifier. The
+trade data were filtered to include only valid reporting and partner countries, excluding
+aggregate or non-sovereign entities such as World, European Union, and Other Asia, etc.
+
+The World Bank datasets were combined into a single table using inner joins, ensuring that
+only countries present across all three sources were retained. Duplicate columns were
+removed and variable names were standardized for clarity. 
+
+Finally, the cleaned World Bank data were merged with the trade dataset to construct two
+key network components:
+
+-   A weighted directed edge list: representing exports from country i to country j. The
+    edge attribute captures the trade value (measured in thousands of U.S. dollars),
+    indicating the intensity or magnitude of the trade relationship between two countries.
+    Each edge corresponds to a direct trade flow from an exporting country (reporter) to
+    an importing country (partner).
+
+-   A vertex attribute table: in which each vertex represents a country. This table
+    includes country-specific attributes such as economic indicators (GDP, inflation rate,
+    etc), governance quality (government effectiveness, regulatory quality, etc), and
+    trade facilitation measures (border time and cost for export and import).
+
+The resulting dataset covers 181 countries with 18940 trade links in 2018.
+
+### Descriptive Statistics
+
+This chapter examines the structure of international trade relationships in 2018. The data
+reveals an interconnected global economy with strong reciprocal trading partnerships. The
+network shows a high density (0.581) and reciprocity (0.755), indicating that most
+countries engage in bilateral trade relationships rather than one-way flows. With 18,940
+trade connections and very high transitivity (0.809), the data demonstrates that trading
+partners form tight-knit regional and global trading clusters. The dominance of mutual
+dyads (7,149) over asymmetric ones (4,641) further confirms that relationships in 2018
+were predominantly two-way, reflecting the interdependent nature of the global economy.
+
+Table 3: Network Statistics. Presents key structural metrics of the international trade
+network, showing a dense and highly reciprocal structure (density = 0.581; reciprocity =
+0.755) with strong clustering (transitivity = 0.809) and no isolated nodes among 181
+countries.
+
+| Metric             | Value  |
+|--------------------|--------|
+| Number of Vertices | 181    |
+| Number of Edges    | 18,940 |
+| Density            | 0,581  |
+| Reciprocity        | 0,755  |
+| Transitivity       | 0,809  |
+| Mean Distance      | Inf    |
+| Number of Isolates | 0      |
+
+Table 4: Dyad Census. Summarizes the distribution of dyadic relationships in the network,
+indicating that most country pairs engage in mutual trade (7,149 mutual dyads) compared to
+fewer asymmetric or null trade relationships.
+
+| Mutual | Asymmetric |  Null |
+|--------|-----------:|------:|
+| 7,149  |      4,641 | 4,500 |
+
+Table 5: Triad Census Reports the frequencies of triadic configurations, revealing a
+predominance of fully connected triads (type 300) and reciprocated trade structures (e.g.,
+111U, 120U), reflecting strong transitivity and clustering within the global trade system.
+
+|   003 |   012 |   102 |  021D | 021U |  021C |  111D |   111U |
+|------:|------:|------:|------:|-----:|------:|------:|-------:|
+| 70972 | 89605 | 53883 | 63714 | 7989 | 12420 | 11889 | 142706 |
+
+|  030T | 030C |   201 | 120D |   120U | 120C |    210 |    300 |
+|------:|-----:|------:|-----:|-------:|-----:|-------:|-------:|
+| 15583 |  405 | 66890 | 5027 | 120839 | 8840 | 100917 | 200000 |
+
+Table 6: Dataset attributes. Summary statistics for all numerical attributes in the
+dataset, including trade performance indicators, documentation and border processing
+times, costs, and macroeconomic measures. The results show substantial variation across
+countries, particularly in trade costs and GDP, indicating heterogeneity in trade
+efficiency, economic quality, and governance quality among countries.
+
+| Attribute                |     Mean |      Std |      Min |   Median |      Max |
+|--------------------------|---------:|---------:|---------:|---------:|---------:|
+| export_border_time_hrs   |  55.4698 | 54.40175 |        0 |       48 |      296 |
+| import_border_time_hrs   | 69.83424 | 74.52605 |        0 |       54 |      402 |
+| trading_score            | 71.09771 | 22.35462 |        0 | 72.68096 |      100 |
+| export_doc_time_hrs      |  48.1589 | 68.24675 |      0.5 | 25.61538 |      528 |
+| import_doc_time_hrs      | 60.56441 | 99.47628 |      0.5 |       35 |     1090 |
+| export_border_cost_usd   | 393.3322 | 355.6893 |        0 |      319 | 2222.692 |
+| export_border_cost_score | 64.04019 | 28.25334 |        0 | 68.65352 |      100 |
+| export_doc_cost_usd      | 122.3535 | 164.3328 |        0 |       84 |     1800 |
+| import_border_cost_usd   | 450.4859 | 407.7731 |        0 |      380 |     3039 |
+| import_border_cost_score | 63.46928 | 28.72403 |        0 | 68.11778 |      100 |
+| import_doc_cost_usd      | 157.7586 | 189.2184 |        0 |     92.8 |     1025 |
+| import_doc_cost_score    |  77.4976 | 25.01695 |        0 | 86.07143 |      100 |
+| import_border_time_score | 75.05148 | 25.65405 |        0 | 81.00358 |      100 |
+| import_doc_time_score    | 76.62794 | 26.96001 |        0 | 85.35565 |      100 |
+| inflation_rate           | 4.506356 | 8.657342 |  -2.8147 | 2.449891 | 83.50153 |
+| gdp_growth               | 3.374654 | 6.853632 | -19.4973 | 2.989838 | 91.13704 |
+| gdp_current_usd          | 4.11E+11 | 1.81E+12 | 48015260 | 2.63E+10 | 2.07E+13 |
+| gov_effectiveness        | 6.55E-10 |        1 | -2.32056 | -0.06429 | 2.231766 |
+| regulatory_quality       | 3.21E-09 |        1 | -2.38674 |  -0.0441 | 2.221292 |
+| control_corruption       | 3.28E-09 |        1 | -1.78583 | -0.17626 | 2.171759 |
+| rule_of_law              | 4.02E-09 |        1 | -2.29866 | -0.15911 | 2.034399 |
+
+#### Distribution Analysis Vertices
+
+The distribution peaks around log10 5 - 6 has a long tail extending to the right (Figure
+1). This tells us most trade relationships are moderate-sized, and there are fewer
+extremely large trade relationships. The highest frequency is around 5,5 to 6 which
+translates to between \$316 million and \$1 billion in trade. The right tail shows some
+relationships that are 100-1000x larger than typical ones. These are likely major trade
+corridors.
+
+![Distribution of Trade Values](figures/trade_value.png){#fig-trade-values fig-pos="H"}
+
+![Bilateral Trade Network](figures/bilateral_trade.png){#fig-bilateral-trade fig-pos="H"}
+
+This chart highlights the dominance of China -\> USA trade (480 billion), the largest
+bilateral flow in 2018. The USA features prominently as a destination for Mexican and
+Canadian exports, while Hong Kong serves as a crucial intermediary for Chinese trade.
+Asian manufacturing networks (Korea, Japan, China) and significant trade imbalances
+characterize global commerce.
 
 ## Research Rationale
 
@@ -512,12 +690,200 @@ analysis of international trade patterns than alternative approaches.
 -   View the SNA4DS template for reference how to add Code Block to write this part
     properly
 
-### MRQAP – 2 POINTS  - Silvia + Paritosh
-Combine to 1 model 
-Present your results appropriately (plots, tables…) and discuss your findings in plain
-English Discuss the meaning of your findings in relation to your hypothesis.
+### MRQAP – Results for Model 1
 
+We estimate a number of MRQAP models with bilateral trade intensity between country pairs
+as the dependent network in order to address Research Question 1. According to our
+hypotheses, regulatory quality similarity (H1a) and corruption control similarity (H2a)
+are the primary predictors that capture similarities in governance characteristics. We use
+inflation dissimilarity and the dyad's mean GDP as controls in every specification. We
+employ MRQAP with 5,000 QAP permutations to obtain network-robust p-values because trade
+relations between dyads are not independent.
 
+We start with two baseline models that solely take economic covariates into account. The
+GDP dyadic average is included in Model 0. This model already explains about half of the
+variance in bilateral trade intensity (R² ≈ 0.50), as @tbl-mrqap-fit demonstrates. This
+suggests that economic size is a very strong predictor of how intensely countries trade.
+According to the permu, the GDP_mean coefficient is large, positive, and highly
+significant in all models (about 0.31).
+
+Model 1 incorporates differences in inflation between pairs of countries. Dyads with more
+similar inflation rates typically engage in more intense trading, as indicated by the
+negative coefficient on Inflation_diff. Its two-tailed permutation p-value, however, is
+only marginally significant (between 0.07 and 0.09), indicating that this relationship is
+not as strong as the GDP effect. The overall fit is barely affected by the inclusion of
+inflation dissimilarity: When compared to the GDP-only baseline, R2 rises slightly and
+mean squared error (MSE) falls slightly, but AIC and BIC values only slightly improve
+(@tbl-mrqap-fit).
+
+To test H1a, we next present our first governance similarity metric, regulatory quality
+similarity. Higher values indicate more similar regulatory environments because this
+variable (RegQual_similarity) is calculated as the negative absolute difference between
+the standardised regulatory quality scores of various nations. The strong positive effect
+of GDP_mean and the weak negative effect of Inflation_diff are essentially unchanged in
+Model H1a (not shown separately), while the coefficient on RegQual_similarity is positive
+but very small in magnitude and statistically non-significant. In comparison to the purely
+economic baseline, adding regulatory quality similarity hardly affects R2, MSE, AIC, or
+BIC, according to the model fit statistics in @tbl-mrqap-fit.
+
+Lastly, the governance similarity metrics RegQual_similarity and CorrControl_similarity
+are included in Model 1 MRQAP (Model H1a+H2a in @tbl-mrqap-fit). The complete set of
+coefficients is reported in @tbl-mrqap-coefs. Once more, the RegQual_similarity estimate
+is small and positive (\~ 0.013), whereas the CorrControl_similarity estimate is small and
+negative (\~ –0.012). Crucially, after controlling for GDP and inflation, both
+coefficients have comparatively large two-tailed permutation p-values (approximately 0.11
+and 0.10, respectively), suggesting that neither effect is statistically significant at
+conventional levels. On the other hand, Inflation_diff continues to show a slight
+negative, marginally significant effect, and GDP_mean maintains a strong, highly
+significant positive association with trade intensity.
+
+@tbl-mrqap-coefs summarizes the MRQAP estimates for Model 1, focusing on the two
+governance similarity terms and the controls.
+
+```{r}
+#| label: tbl-mrqap-coefs
+#| tbl-cap: "MRQAP Model 1: Bilateral trade intensity regressed on governance similarity and controls."
+#| echo: false
+
+library(tibble)
+library(dplyr)
+
+# Build a coefficient table directly from the netlm object
+coef_mat <- cbind(
+  Estimate    = mod_H1a_H2a$coefficients,
+  `Pr(<=b)`   = mod_H1a_H2a$pleeq,
+  `Pr(>=b)`   = mod_H1a_H2a$pgreq,
+  `Pr(>=|b|)` = mod_H1a_H2a$pgreqabs
+)
+
+coef_table <- coef_mat |>
+  as.data.frame() |>
+  rownames_to_column("Term")
+
+knitr::kable(coef_table, digits = 3)
+```
+
+The estimated coefficients from Model 1 (not including the intercept) are shown in Figure
+@fig-mrqap-coefs. With a significantly larger positive bar than any other term, the plot
+emphasises GDP_mean's dominant role. A weaker effect is indicated by the Inflation_diff
+bar, which is negative and noticeably smaller. The absolute value of the bars for
+RegQual_similarity and CorrControl_similarity is nearly zero, which graphically supports
+their lack of a significant and statistical influence on trade intensity.
+
+To assess overall model performance more systematically, we compare mean squared error
+(MSE), R², AIC and BIC across the four specifications (baseline with GDP only, baseline
+plus inflation, H1a, and H1a+H2a). @tbl-mrqap-fit shows these metrics.
+
+```{r}
+#| label: tbl-mrqap-fit
+#| tbl-cap: "Model fit statistics (MSE, R², AIC, BIC) for alternative MRQAP specifications."
+#| echo: false
+
+library(tibble)
+library(dplyr)
+
+# Helper function to compute fit stats from a netlm object
+get_fit_stats <- function(mod) {
+  y_hat <- mod$fitted.values        # predicted values
+  e     <- mod$residuals            # residuals
+  y     <- y_hat + e                # reconstruct response
+
+  n <- length(y)                    # number of observations
+  k <- length(mod$coefficients)     # number of parameters
+
+  sse <- sum(e^2)
+  mse <- mean(e^2)
+  sst <- sum((y - mean(y))^2)
+  r2  <- 1 - sse / sst
+
+  # Gaussian AIC/BIC based on residual variance
+  aic <- n * log(sse / n) + 2 * k
+  bic <- n * log(sse / n) + k * log(n)
+
+  list(MSE = mse, R2 = r2, AIC = aic, BIC = bic)
+}
+
+fit0    <- get_fit_stats(mod0)
+fit1    <- get_fit_stats(mod1)
+fit_H1a <- get_fit_stats(mod_H1a)
+fit_H2  <- get_fit_stats(mod_H1a_H2a)
+
+model_fit <- tibble(
+  Model = c("Baseline (GDP)", 
+            "Baseline + Inflation", 
+            "H1a: +Reg. quality similarity", 
+            "H1a+H2a: +Corr. control similarity"),
+  MSE = c(fit0$MSE,
+          fit1$MSE,
+          fit_H1a$MSE,
+          fit_H2$MSE),
+  R2  = c(fit0$R2,
+          fit1$R2,
+          fit_H1a$R2,
+          fit_H2$R2),
+  AIC = c(fit0$AIC,
+          fit1$AIC,
+          fit_H1a$AIC,
+          fit_H2$AIC),
+  BIC = c(fit0$BIC,
+          fit1$BIC,
+          fit_H1a$BIC,
+          fit_H2$BIC)
+)
+
+knitr::kable(model_fit, digits = 3)
+```
+
+The model comparison in @tbl-mrqap-fit demonstrates that, in addition to the economic
+controls, governance similarity adds minimal explanatory power. When switching from the
+baseline models to the governance-augmented models, improvements in MSE, AIC, and BIC are
+minimal, and R2 stays near 0.50 for all four specifications. This implies that rather than
+similarity in the two governance dimensions taken into consideration, economic size (and
+to a lesser extent, inflation differences) accounts for the majority of the explainable
+variation in bilateral trade intensity in our data.
+
+To visualize the contributions of the different predictors in Model 1, Figure
+@fig-mrqap-coefs plots the estimated coefficients (excluding the intercept). This
+highlights the relative magnitude and direction of the effects.
+
+```{r}
+#| label: fig-mrqap-coefs
+#| fig-cap: "Estimated coefficients from MRQAP Model 1 (excluding intercept)."
+#| echo: false
+#| warning: false
+#| message: false
+
+library(ggplot2)
+
+coef_plot <- coef_table |>
+  dplyr::filter(Term != "Intercept")
+
+ggplot(coef_plot, aes(x = Term, y = Estimate)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    x = NULL,
+    y = "Coefficient (change in trade intensity)",
+    title = "MRQAP Model 1 coefficients"
+  )
+```
+
+The estimated coefficients from Model 1 (not including the intercept) are shown in Figure
+@fig-mrqap-coefs. With a significantly larger positive bar than any other term, the plot
+emphasises GDP_mean's dominant role. A weaker effect is indicated by the Inflation_diff
+bar, which is negative and noticeably smaller. The absolute value of the bars for
+RegQual_similarity and CorrControl_similarity is nearly zero, which graphically supports
+their lack of a significant and statistical influence on trade intensity.
+
+When combined, these MRQAP findings only partially support Research Question 1. Economic
+fundamentals clearly influence the intensity of bilateral trade: country pairs with higher
+combined GDP trade significantly more, and there is some evidence that stronger trade ties
+are linked to macroeconomic similarity (lower inflation differences). However, once these
+economic factors are considered, we find no evidence that similarities in regulatory
+quality or corruption control, as measured here, result in systematically higher trade
+intensity. As a result, the MRQAP analysis does not support either H1a or H2a. The primary
+drivers of variation in bilateral trade intensity in this network seem to be basic
+economic capacity and modest macroeconomic stability rather than governance similarity.
 
 ### ERGM – 2.5 POINTS - Chau + Leon
 
@@ -535,7 +901,7 @@ English Discuss the meaning of your findings in relation to your hypothesis.
 
 -   What remains an open problem? Noud
 
--    Can you give suggestions for future work in this area? Leon
+-   Can you give suggestions for future work in this area? Leon
 
 ## References {.unnumbered}
 
@@ -553,4 +919,3 @@ generated by ChatGPT were critically reviewed, validated, and edited by **Group 
 Boeren - Noud van Summeren - Chau Nguyen - Paritosh Singh - Silvia Petrova)** to ensure
 accuracy and academic integrity. **Group 08** assumes full responsibility for the final
 content of this work.
-
