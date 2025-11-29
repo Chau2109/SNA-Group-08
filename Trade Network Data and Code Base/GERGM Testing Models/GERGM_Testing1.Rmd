@@ -1,0 +1,512 @@
+
+```{r}
+#Install all packages before running
+#install.packages(c("here", "readr", "readxl", "data.table", "snafun", "igraph", "gergm"))
+#remotes::install_github("matthewjdenny/GERGM",
+#dependencies = TRUE, force = TRUE)
+```
+
+
+```{r}
+# Import all datasets
+trade_data <- readxl::read_excel("trade_1988_2021.xlsx")
+wb1 <- readxl::read_excel("P_Data_Extract_From_Doing_Business.xlsx")
+wb2 <- readxl::read_excel("P_Data_Extract_From_World_Development_Indicators.xlsx")
+wb3 <- readxl::read_excel("P_Data_Extract_From_Worldwide_Governance_Indicators.xlsx")
+
+# Convert to data.table for manipulation
+trade_data <- data.table::as.data.table(trade_data)
+wb1 <- data.table::as.data.table(wb1)
+wb2 <- data.table::as.data.table(wb2)
+wb3 <- data.table::as.data.table(wb3)
+```
+
+```{r}
+# Select only 2018
+trade_data_2018 <- trade_data[
+  Year == 2018 &
+    !ReporterName %in% c("Other Asia, nes", "World", "European Union") &
+    !PartnerName %in% c("Other Asia, nes", "World", "European Union") &
+    `TradeValue in 1000 USD` > 0
+]
+```
+
+```{r}
+# Clean Doing Business Data with data.table
+wb1 <- data.table::setnames(wb1, old = names(wb1), new = make.names(names(wb1)))
+names(wb1)
+wb1 <- wb1[, .(
+  time = Time,
+  time_code = Time.Code,
+  category = Category,
+  country_name = Country.Name,
+  country_code = Country.Code,
+
+  # Export times
+  export_border_time_hrs = Time.to.export..Border.compliance..hours...DB16.20.methodology...TRD.ACRS.BRDR.EXPT.BRDR.COMP.HR.DB1619.,
+  export_doc_time_hrs = Time.to.export..Documentary.compliance..hours...DB16.20.methodology...TRD.ACRS.BRDR.DOC.COMP.HR.DB1619.,
+
+  # Import times
+  import_border_time_hrs = Time.to.import..Border.compliance..hours...DB16.20.methodology...TRD.ACRS.BRDR.IMP.BRDR.COMP.HR.DB1619.,
+  import_doc_time_hrs = Time.to.import..Documentary.compliance..hours...DB16.20.methodology...TRD.ACRS.BRDR.IMP.DOC.COMP.HR.DB1619.,
+
+  # Export costs
+  export_border_cost_usd = Trading.across.borders..Cost.to.export..Border.compliance..USD...DB16.20.methodology...TRD.ACRS.BRDR.EXPT.COST.BRDR.COMP.CD.DB1619.,
+  export_border_cost_score = Trading.across.borders..Cost.to.export..Border.compliance..USD...DB16.20.methodology....Score..TRD.ACRS.BRDR.EXPT.COST.BRDR.COMP.CD.DB1619.DFRN.,
+  export_doc_cost_usd = Trading.across.borders..Cost.to.export..Documentary.compliance..USD...DB16.20.methodology...TRD.ACRS.BRDR.EXPT.COST.DOC.COMP.CD.DB1619.,
+
+  # Import costs
+  import_border_cost_usd = Trading.across.borders..Cost.to.import..Border.compliance..USD...DB16.20.methodology...TRD.ACRS.BRDR.IMP.COST.BRDR.COMP.CD.DB1619.,
+  import_border_cost_score = Trading.across.borders..Cost.to.import..Border.compliance..USD...DB16.20.methodology....Score..TRD.ACRS.BRDR.IMP.COST.BRDR.COMP.CD.DB1619.DFRN.,
+  import_doc_cost_usd = Trading.across.borders..Cost.to.import..Documentary.compliance..USD...DB16.20.methodology...TRD.ACRS.BRDR.IMP.COST.DOC.COMP.CD.DB1619.,
+  import_doc_cost_score = Trading.across.borders..Cost.to.import..Documentary.compliance..USD...DB16.20.methodology....Score..TRD.ACRS.BRDR.IMP.COST.DOC.COMP.CD.DB1619.DFRN.,
+
+  # Scores
+  trading_score = Trading.across.borders..DB16.20.methodology....Score..TRD.ACRS.BRDR.DB1619.DFRN.,
+  import_border_time_score = Trading.across.borders..Time.to.import..Border.compliance..hours...DB16.20.methodology....Score..TRD.ACRS.BRDR.IMP.TM.BRDR.COMP.HR.DB1619.DFRN.,
+  import_doc_time_score = Trading.across.borders..Time.to.import..Documentary.compliance..hours...DB16.20.methodology....Score..TRD.ACRS.BRDR.IMP.TM.DOC.COMP.HR.DB1619.DFRN.
+)]
+```
+
+```{r}
+#Rename and clean economic indicators
+wb2 <- data.table::setnames(wb2, old = names(wb2), new = make.names(names(wb2)))
+
+# Select and rename relevant columns
+wb2 <- wb2[, .(
+  time = Time,
+  time_code = Time.Code,
+  country_name = Country.Name,
+  country_code = Country.Code,
+  inflation_rate = Inflation..consumer.prices..annual.....FP.CPI.TOTL.ZG.,
+  gdp_growth = GDP.growth..annual.....NY.GDP.MKTP.KD.ZG.,
+  gdp_current_usd = GDP..current.US....NY.GDP.MKTP.CD.
+)]
+```
+
+```{r}
+#Rename and clean Governance Indicator
+wb3 <- data.table::setnames(wb3, old = names(wb3), new = make.names(names(wb3)))
+
+# Select and rename relevant columns
+wb3 <- wb3[, .(
+  time = Time,
+  time_code = Time.Code,
+  country_name = Country.Name,
+  country_code = Country.Code,
+  gov_effectiveness = Government.Effectiveness..Estimate..GE.EST.,
+  regulatory_quality = Regulatory.Quality..Estimate..RQ.EST.,
+  control_corruption = Control.of.Corruption..Estimate..CC.EST.,
+  rule_of_law = Rule.of.Law..Estimate..RL.EST.
+)]
+
+```
+
+```{r}
+# Unique Country Codes for every dataset
+length(unique(trade_data_2018$ReporterISO3))
+length(unique(wb1$country_code))
+length(unique(wb2$country_code))
+length(unique(wb3$country_code))
+
+wb_combined <- merge(wb1, wb2, by = "country_code", all = FALSE)
+wb_combined <- merge(wb_combined, wb3, by = "country_code", all = FALSE)
+wb_combined <- unique(wb_combined, by = "country_code")
+
+length(unique(wb_combined$country_code))
+```
+
+```{r}
+# Keep only countries that appear in trade data (reporter or partner)
+trade_countries <- unique(c(trade_data_2018$ReporterISO3, trade_data_2018$PartnerISO3))
+wb_combined <- wb_combined[country_code %in% trade_countries]
+```
+
+```{r}
+# Remove duplicate columns - keep only one version of time, time_code, and country_name
+wb_combined <- wb_combined[, .(
+  country_code,
+  export_border_time_hrs,
+  import_border_time_hrs,
+  trading_score,
+  export_doc_time_hrs,
+  import_doc_time_hrs,
+  export_border_cost_usd,
+  export_border_cost_score,
+  export_doc_cost_usd,
+  import_border_cost_usd,
+  import_border_cost_score,
+  import_doc_cost_usd,
+  import_doc_cost_score,
+  import_border_time_score,
+  import_doc_time_score,
+  inflation_rate,
+  gdp_growth,
+  gdp_current_usd,
+  gov_effectiveness,
+  regulatory_quality,
+  control_corruption,
+  rule_of_law
+)]
+```
+
+```{r}
+# Check the cleaned column names
+colnames(wb_combined)
+length(unique(wb_combined$country_code))
+
+length(unique(wb_combined$country_code))
+
+# Edge List
+edge_list <- data.table::data.table(
+  from = trade_data_2018$ReporterISO3,
+  to = trade_data_2018$PartnerISO3,
+  weight = trade_data_2018$`TradeValue in 1000 USD`
+)
+
+```
+
+```{r}
+# Prepare network data for MRQAP and GERGM. Create Trade graph based on vertex and edge_list
+library(data.table)
+
+## 1. CLEAN TRADE VALUES AND AGGREGATE DYADS --------------------------
+
+# 1a. Clean "TradeValue in 1000 USD" that uses dots as thousand separators
+# e.g. "378.244.208" -> "378244208"
+trade_data_2018[, trade_value_chr := gsub("\\.", "", `TradeValue in 1000 USD`)]
+trade_data_2018[, trade_value    := as.numeric(trade_value_chr)]
+
+# sanity check
+summary(trade_data_2018$trade_value)
+sum(is.na(trade_data_2018$trade_value))  # should be 0 or very small
+
+# 1b. Aggregate to directed dyads (from reporter to partner)
+trade_dyads <- trade_data_2018[, .(
+  weight = sum(trade_value, na.rm = TRUE)
+), by = .(from = ReporterISO3, to = PartnerISO3)]
+
+# 1c. Create node ID vector
+node_ids <- sort(unique(c(trade_dyads$from, trade_dyads$to)))
+
+# 1d. Build raw trade matrix
+trade_matrix_raw <- matrix(
+  0,
+  nrow = length(node_ids),
+  ncol = length(node_ids),
+  dimnames = list(node_ids, node_ids)
+)
+
+trade_matrix_raw[cbind(
+  match(trade_dyads$from, node_ids),
+  match(trade_dyads$to,   node_ids)
+)] <- trade_dyads$weight
+
+diag(trade_matrix_raw) <- 0   # no self-trade
+
+class(trade_matrix_raw)  # "matrix"
+dim(trade_matrix_raw)
+
+# 1e. Log-transform and scale to [0,1] for GERGM
+X_log    <- log1p(trade_matrix_raw)
+X_scaled <- (X_log - min(X_log)) / (max(X_log) - min(X_log))
+
+trade_matrix <- X_scaled   # this is what we’ll feed into GERGM
+
+```
+
+```{r}
+## --- 2. BUILD & CLEAN NODE-LEVEL COVARIATES -----------------------------
+
+# Start from all node_ids present in the network
+vertex_attributes <- merge(
+  data.table(country_code = node_ids),
+  as.data.table(wb_combined),
+  by  = "country_code",
+  all.x = TRUE,
+  sort = FALSE
+)
+
+# 2a. Total imports per country (column sums)
+imports_vector <- colSums(trade_matrix_raw, na.rm = TRUE)
+vertex_attributes[, total_imports :=
+                    imports_vector[match(country_code, names(imports_vector))]]
+
+# 2b. Make sure numeric covariates are numeric
+numeric_covars <- c(
+  "gdp_current_usd",
+  "inflation_rate",
+  "regulatory_quality",
+  "rule_of_law",
+  "total_imports"
+)
+
+vertex_attributes[, (numeric_covars) :=
+                    lapply(.SD, as.numeric), .SDcols = numeric_covars]
+
+# 2c. Z-scores (with log for big, skewed ones)
+vertex_attributes[, `:=`(
+  gdp_z                = as.numeric(scale(log1p(gdp_current_usd))),
+  inflation_z          = as.numeric(scale(inflation_rate)),
+  regulatory_quality_z = as.numeric(scale(regulatory_quality)),
+  rule_of_law_z        = as.numeric(scale(rule_of_law)),
+  total_imports_z      = as.numeric(scale(log1p(total_imports)))
+)]
+
+```
+
+
+```{r}
+## 3. MATCH COVARIATES AND NETWORK -----------------------------------
+
+# Build full covariate data frame
+node_covariates_full <- as.data.frame(
+  vertex_attributes[, .(
+    gdp_z,
+    inflation_z,
+    regulatory_quality_z,
+    rule_of_law_z,
+    total_imports_z
+  )]
+)
+rownames(node_covariates_full) <- vertex_attributes$country_code
+
+# 3a. Drop countries with any NA / non-finite covariate
+keep_cov <- apply(node_covariates_full, 1, function(x) all(is.finite(x)))
+node_covariates_clean <- node_covariates_full[keep_cov, , drop = FALSE]
+
+# 3b. Make sure we only keep countries that are in both the matrix and covariates
+common_countries <- intersect(rownames(trade_matrix), rownames(node_covariates_clean))
+
+# order matters: use the same order for both
+common_countries <- sort(common_countries)
+
+trade_matrix_gergm <- trade_matrix[common_countries, common_countries]
+node_covariates    <- node_covariates_clean[common_countries, , drop = FALSE]
+
+# sanity checks
+identical(rownames(trade_matrix_gergm), rownames(node_covariates))  # should be TRUE
+class(node_covariates)   # "data.frame"
+dim(node_covariates)
+dim(trade_matrix_gergm)
+```
+```{r}
+# Running Research Question 1 - H1  (Silvia)
+#prepare for mrqap
+
+# Keep countries in consistent order
+countries <- rownames(node_covariates)
+
+# Dependent network (trade intensity)
+trade_matrix_mrqap <- trade_matrix_gergm[countries, countries]
+
+# Node-level variables
+reg_q <- node_covariates$regulatory_quality_z
+gdp   <- node_covariates$gdp_z
+infl  <- node_covariates$inflation_z
+
+names(reg_q) <- names(gdp) <- names(infl) <- countries
+
+# MAIN EFFECT: similarity in regulatory quality (H1a)
+reg_sim <- -abs(outer(reg_q, reg_q, "-"))
+
+# CONTROL: mean GDP of dyad
+gdp_mean <- (outer(gdp, gdp, "+")) / 2
+
+# CONTROL: inflation dissimilarity
+infl_diff <- abs(outer(infl, infl, "-"))
+
+set.seed(123)
+
+# Baseline
+mod0 <- sna::netlm(
+  y         = trade_matrix_mrqap,
+  x         = list(gdp_mean),
+  intercept = TRUE,
+  mode      = "digraph",
+  nullhyp   = "qapspp",
+  reps      = 5000
+)
+mod0$names <- c("Intercept", "GDP_mean")
+
+summary(mod0)
+
+mod1 <- sna::netlm(
+  y         = trade_matrix_mrqap,
+  x         = list(gdp_mean, infl_diff),
+  intercept = TRUE,
+  mode      = "digraph",
+  nullhyp   = "qapspp",
+  reps      = 5000
+)
+mod1$names <- c("Intercept", "GDP_mean", "Inflation_diff")
+summary(mod1)
+
+
+# Testing Model performance & Result Interpretation (Check theory about MRQAP and Step 3, 4, 5 in https://docs.google.com/document/d/1TYa1N20vVsV6F83ZtIQqayogQ-0-fUSLKy6a9MPEjYU/edit?tab=t.0)
+
+```
+
+```{r}
+
+mod_H1a <- sna::netlm(
+  y         = trade_matrix_mrqap,
+  x         = list(reg_sim, gdp_mean, infl_diff),
+  intercept = TRUE,
+  mode      = "digraph",
+  nullhyp   = "qapspp",
+  reps      = 5000
+)
+
+# Label coefficients for readability
+mod_H1a$names <- c(
+  "Intercept",
+  "RegQual_similarity",
+  "GDP_mean",
+  "Inflation_diff"
+)
+
+summary(mod_H1a)
+
+# Running Research Question 1 - H2  (Paritosh)
+
+# 1. Take corruption data from wb_combined and make sure it is numeric
+corr_dt <- wb_combined[, .(country_code, control_corruption)]
+corr_dt <- unique(corr_dt, by = "country_code")
+
+# coerce to numeric (in case it's character / factor)
+corr_dt[, control_corruption := as.numeric(control_corruption)]
+
+# 2. Align corruption with the MRQAP country order
+#    This creates a vector the same length/order as 'countries'
+corr_z <- corr_dt$control_corruption[match(countries, corr_dt$country_code)]
+
+# 3. Handle missing values (countries without corruption data)
+#    Replace NAs with the mean of available corruption scores
+corr_mean <- mean(corr_z, na.rm = TRUE)
+corr_z[!is.finite(corr_z)] <- corr_mean
+
+# 4. Standardize (z-score) the aligned corruption vector
+corr_z <- as.numeric(scale(corr_z))
+
+# (optional) naming is not required for outer(), so we can skip names()
+# names(corr_z) <- countries
+
+# MAIN EFFECT for H2a: similarity in corruption control
+corr_sim <- -abs(outer(corr_z, corr_z, "-"))
+
+set.seed(123)
+
+mod_H1a_H2a <- sna::netlm(
+  y         = trade_matrix_mrqap,
+  x         = list(reg_sim, corr_sim, gdp_mean, infl_diff),
+  intercept = TRUE,
+  mode      = "digraph",
+  nullhyp   = "qapspp",
+  reps      = 5000
+)
+
+mod_H1a_H2a$names <- c(
+  "Intercept",
+  "RegQual_similarity",
+  "CorrControl_similarity",
+  "GDP_mean",
+  "Inflation_diff"
+)
+
+summary(mod_H1a_H2a)
+
+```
+
+
+
+```{r}
+# GERGM
+# 1. Building baseline model first (Edges + 1 exogenous attribute)
+# NOTE: THis have error, I am trying to figure it out later, the rest work fine
+trade_formula <- trade_matrix_gergm ~
+  edges(method = "endogenous") +
+  absdiff("regulatory_quality_z") + mutual(alpha = 0.05)
+
+```
+
+
+
+```{r}
+
+gergm_H3b <- GERGM::gergm(
+  formula                        = trade_formula,
+  covariate_data                 = node_covariates,
+  number_of_networks_to_simulate = 100000,
+  thin                           = 1/10,
+  proposal_variance              = 0.05,
+  MCMC_burnin                    = 10000,
+  convergence_tolerance          = 0.5,
+  transformation_type            = "Gaussian",  # I'd start with Gaussian now
+  parallel                       = FALSE,
+  cores                          = 8
+)
+
+GERGM::Trace_Plot(gergm_H3b)
+GERGM::Estimate_Plot(gergm_H3b)
+
+
+```
+
+
+```{r}
+# Building more complicated models by adding more terms
+
+library(GERGM) # Make sure the library is loaded
+
+trade_matrix_gergm <- trade_matrix[common_countries, common_countries]
+node_covariates    <- node_covariates_clean[common_countries, , drop = FALSE]
+
+# sanity checks
+identical(rownames(trade_matrix_gergm), rownames(node_covariates))  # should be TRUE
+# ... [lines omitted for brevity] ...
+
+# --- NEW REQUIRED STEP ---
+# Convert the data frame of covariates into a named list of vectors
+# This is necessary for the 'covariates' argument in the gergm function
+#node_covariates_list <- lapply(as.list(node_covariates), as.vector)
+
+
+```
+```{r}
+trade_formula <- trade_matrix_gergm ~
+  edges(method = "endogenous") +
+  absdiff("regulatory_quality_z") +
+  absdiff("rule_of_law_z") +
+  sender("log_gdp_usd") +
+  receiver("log_gdp_usd") +
+  mutual(alpha = 0.025)
+
+
+```
+
+```{r}
+library(GERGM) # Make sure this is loaded if it's not in the first chunk
+
+gergm_H3b <- gergm(
+  formula                        = trade_formula,
+  # THIS LINE IS FIXED: Use the correct argument name 'covariate_data'
+  covariate_data                 = node_covariates, 
+  number_of_networks_to_simulate = 100000,
+  thin                           = 1/1000,
+  MCMC_burnin                    = 10000, 
+  convergence_tolerance          = 0.1,   
+  transformation_type            = "Gaussian",
+  parallel                       = TRUE,
+  cores                          = 8,
+  control = list(
+    auto_tune = TRUE,             # CRITICAL: Enables automatic parameter tuning
+    target_accept_rate = 0.25,    # Set target rate
+    max_step_size = 0.5,          # Prevents runaway simulations
+    auto_tune_steps = 5000        # More steps for tuning to find a stable point
+  )
+)
+
+GERGM::Trace_Plot(gergm_H3b)
+GERGM::Estimate_Plot(gergm_H3b)
+```
