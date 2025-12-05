@@ -166,14 +166,6 @@ regulatory predictability and foster trust, thereby amplifying trade volumes and
 strengthening economic integration. This research specifically investigates how governance
 similarity between nations influences the strength of their bilateral trade relations.
 
-Building on evidence that institutional quality, corruption control, and regulatory
-effectiveness significantly shape trade performance, this study applies the Multiple
-Regression Quadratic Assignment Procedure (MRQAP) and the Generalized Exponential Random
-Graph Model (GERGM) to capture structural interdependencies and trade intensity within the
-global trade network. By modeling trade as a weighted network, this research provides a
-more accurate understanding of how governance characteristics shape the magnitude of
-international trade flows, addressing gaps left by prior network analyses.
-
 Empirical studies consistently demonstrate that governance conditions affect bilateral
 trade costs and export performance. Evidence from [@de_groot_institutional_2004] shows
 that countries with similar institutional frameworks trade approximately 13% more with
@@ -256,77 +248,76 @@ pairs influence the intensity of their bilateral trade relationships?
 1.  **Hypotheses H1a:** Countries with more similar levels of regulatory quality engage in
     higher-value bilateral trade.
 
-2.  **Hypothesis H2a:** Countries with more similar levels of corruption control engage in
+    When countries share comparable institutional frameworks, firms face lower
+    coordination and enforcement costs through contract negotiation and dispute
+    resolution, according to [@francois_institutions_2013; @dixit_lawlessness_2011],
+    reducing transaction frictions and enabling greater private-sector participation in
+    cross-border markets. Because regulatory quality reflects a government’s capacity to
+    design and implement policies that support private-sector development, institutional
+    similarity is expected not only to increase the likelihood of trade relationships
+    emerging but also to enhance the intensity of existing trade flows. By lowering firms’
+    adaptation costs when entering foreign markets, similar regulatory environments
+    facilitate deeper export integration, forming the basis for **Hypothesis H1a**.
+
+2.  **Hypothesis H1b:** Countries with more similar levels of corruption control engage in
     higher-value bilateral trade.
 
-When countries share comparable institutional frameworks, firms face lower coordination
-and enforcement costs through contract negotiation and dispute resolution, according to
-[@francois_institutions_2013; @dixit_lawlessness_2011], reducing transaction frictions and
-enabling greater private-sector participation in cross-border markets. Because regulatory
-quality reflects a government’s capacity to design and implement policies that support
-private-sector development, institutional similarity is expected not only to increase the
-likelihood of trade relationships emerging but also to enhance the intensity of existing
-trade flows. By lowering firms’ adaptation costs when entering foreign markets, similar
-regulatory environments facilitate deeper export integration, forming the basis for
-*Hypothesis H1a* and *Hypothesis H1b.*
-
-As noted in the [@shleifer_corruption_1993], firms also face lower enforcement costs when
-corruption levels and rule-of-law standards are comparable, reducing uncertainty about
-contract enforcement and thereby improving trade potential, motivating *Hypothesis H2a*.
-Likewise, similarity in the rule of law reduces legal uncertainty in cross-border
-transactions and mitigates the negative effects of weak contract enforcement on trade
-flows [@de_groot_institutional_2004; @noauthor_role_nodate]. When both trading partners
-have comparable legal systems, including strong contract enforcement and effective
-property rights protection, firms can confidently enter into long-term trade relationships
-and make relationship-specific investments, supporting *Hypothesis H2a* and *Hypothesis*
-*H2b*.
+    As noted in the [@shleifer_corruption_1993], firms also face lower enforcement costs
+    when corruption levels and rule-of-law standards are comparable, reducing uncertainty
+    about contract enforcement and thereby improving trade potential, motivating
+    **Hypothesis H1b**.
 
 **Research Question 2:** How do similarities in governance quality and the broader
 patterns of interdependence among trading partners influence the formation and intensity
 of bilateral export relationships across countries in the global economy?
 
-1.  **Hypotheses H1b:** Countries with more similar levels of regulatory quality are
+1.  **Hypotheses H2a:** Countries with more similar levels of regulatory quality are
     expected to engage in higher-value bilateral trade
 
 2.  **Hypothesis H2b:** Countries with more similar rule‐of‐law conditions are expected to
-    engage in higher-value bilateral trade
+    engage in higher-value bilateral trade.
 
-3.  **Hypothesis H3b:** Bilateral export relationships are expected to display
+    Likewise, similarity in the rule of law reduces legal uncertainty in cross-border
+    transactions and mitigates the negative effects of weak contract enforcement on trade
+    flows [@de_groot_institutional_2004; @noauthor_role_nodate]. When both trading
+    partners have comparable legal systems, including strong contract enforcement and
+    effective property rights protection, firms can confidently enter into long-term trade
+    relationships and make relationship-specific investments, supporting **Hypothesis
+    H2a** and **Hypothesis H2b**.
+
+3.  **Hypothesis H2c:** Bilateral export relationships are expected to display
     reciprocity, such that higher export volumes from one country to its trading partner
     are associated with higher export volumes received in return from that partner.
 
-4.  **Hypothesis H4b:** Trade relationships exhibit transitivity, where countries are more
+    Trade networks are not random but exhibit systematic structural patterns driven by
+    economic, political, and strategic considerations. One key structural feature of trade
+    networks is reciprocity, which reflects the tendency for countries to return export
+    flows received from their partners [@setayesh_analysis_2022]. Reciprocal trade emerges
+    through several channels, including diplomatic norms, bilateral or regional trade
+    agreements, and mutual economic interdependence, all of which encourage balanced
+    exchange rather than one-sided trade flows. Research from [@noauthor_make_nodate]
+    shows that mutual economic dependence creates incentives for countries to maintain
+    stable, reciprocal trade relationships, as disruptions would harm both partners.
+    Together, these studies provide the theoretical foundation for **Hypothesis H2c**.
+
+4.  **Hypothesis H2d:** Trade relationships exhibit transitivity, where countries are more
     likely to trade intensively with partners of their existing trading partners,
-    resulting in clustered patterns of export ties
+    resulting in clustered patterns of export ties.
 
-5.  **Hypothesis H5b:** Countries that already receive high levels of imports from many
+5.  **Hypothesis H2e:** Countries that already receive high levels of imports from many
     partners are likely to become attractive trade destinations, making others more likely
-    to export to them
+    to export to them.
 
-Trade networks are not random but exhibit systematic structural patterns driven by
-economic, political, and strategic considerations. One key structural feature of trade
-networks is reciprocity, which reflects the tendency for countries to return export flows
-received from their partners [@setayesh_analysis_2022]. Reciprocal trade emerges through
-several channels, including diplomatic norms, bilateral or regional trade agreements, and
-mutual economic interdependence, all of which encourage balanced exchange rather than
-one-sided trade flows. Research from [@noauthor_make_nodate] shows that mutual economic
-dependence creates incentives for countries to maintain stable, reciprocal trade
-relationships, as disruptions would harm both partners. Together, these studies provide
-the theoretical foundation for *Hypothesis H3b*.
-
-Clustering patterns are another important determinant of trade network structure,
-motivating *Hypothesis H4b*. Countries within regional trade blocs (e.g., EU, ASEAN,
-NAFTA) develop dense, interconnected trade relationships through harmonized regulations
-and reduced non-tariff barriers [@de_groot_institutional_2004; @noauthor_pdf_2025-1],
-which transitive closure is significant in service trade networks [@feng_service_2021].
-Additionally, large import markets create economies of scale for exporters, justifying the
-fixed costs of market entry. As a result, exporters prioritize these markets, leading to a
-concentration of trade ties on high-import countries, which explains the logic behind the
-core-periphery structure [@noauthor_patterns_nodate; @setayesh_analysis_2022]. This
-research highlights the highly heterogeneous nature of trade connections and demonstrates
-that network degree and centrality patterns matter, as a small number of countries act as
-major hubs, holding a disproportionately large share of global trade flows. Consequently,
-the concentration of trade ties on large import markets supports *Hypothesis H5b*.
+    Clustering patterns are another important determinant of trade network structure,
+    motivating **Hypothesis H2d**. Countries within regional trade blocs (e.g., EU, ASEAN,
+    NAFTA) develop dense, interconnected trade relationships through harmonized
+    regulations and reduced non-tariff barriers [@de_groot_institutional_2004;
+    @noauthor_pdf_2025-1], which transitive closure is significant in service trade
+    networks [@feng_service_2021]. These researches highlights the highly heterogeneous
+    nature of trade connections and demonstrates that network degree and centrality
+    patterns matter, as a small number of countries act as major hubs, holding a
+    disproportionately large share of global trade flows. Consequently, the concentration
+    of trade ties on large import markets supports **Hypothesis H2e**.
 
 Understanding these structural patterns is essential because they reflect systemic forces
 that operate beyond bilateral or single-country characteristics, shaping the overall
@@ -373,27 +364,27 @@ The \texttt{absdiff(rule\_of\_law)} term captures how similar institutions reduc
 \textbf{H3b: Reciprocity}  
 Bilateral export relationships are expected to display reciprocity, such that higher export volumes from one country to its trading partner are associated with higher export volumes received in return from that partner
 &
-\texttt{mutual(alpha = 0.8)}
+\texttt{mutual}
 &
-The \texttt{mutual(alpha = 0.8)} term captures the tendency for bilateral trade relationships to exhibit reciprocity, whereby higher export flows from one country are associated with higher return flows from its trading partner. Reciprocal trade reflects balanced exchange and mutual commitment, reducing asymmetric dependence and fostering more stable and sustainable trading relationships than those based on one-sided export flows
+The \texttt{mutual} term captures the tendency for bilateral trade relationships to exhibit reciprocity, whereby higher export flows from one country are associated with higher return flows from its trading partner. Reciprocal trade reflects balanced exchange and mutual commitment, reducing asymmetric dependence and fostering more stable and sustainable trading relationships than those based on one-sided export flows
 \\
 \hline
 
 \textbf{H4b: Transitivity}  
 Trade relationships exhibit transitivity, where countries are more likely to trade intensively with partners of their existing trading partners, resulting in clustered patterns of export ties
 &
-\texttt{ctriads(alpha = 0.8)}
+\texttt{dgwesp(decay = 0.25, fixed = TRUE, type="OTP")}
 &
-The \texttt{ctriads(alpha = 0.8)} term captures the tendency for triadic closure in trade networks, in which countries sharing a common trading partner are more likely to trade intensively with each other. Shared partners reduce information asymmetries and search costs, facilitating clustered export patterns
+The \texttt{dgwesp(decay = 0.25, fixed = TRUE, type="OTP")} term captures the tendency for triadic closure in trade networks, in which countries sharing a common trading partner are more likely to trade intensively with each other. Shared partners reduce information asymmetries and search costs, facilitating clustered export patterns
 \\
 \hline
 
 \textbf{H5b: Popularity}  
 Countries that already receive high levels of imports from many partners are likely to become attractive trade destinations, making others more likely to export to them
 &
-\texttt{receiver("total\_imports")}
+\texttt{nodeicov("log_total_imports")}
 &
-The \texttt{receiver("total\_imports")} term captures the tendency for countries with high import volumes to attract additional export ties. Large import markets signal strong demand and institutional reliability, lowering perceived risks for new exporters and generating self-reinforcing patterns in which highly connected import destinations continue to receive a disproportionate share of global exports
+The \texttt{nodeicov("log_total_imports")} term captures the tendency for countries with high import volumes to attract additional export ties. Large import markets signal strong demand and institutional reliability, lowering perceived risks for new exporters and generating self-reinforcing patterns in which highly connected import destinations continue to receive a disproportionate share of global exports
 \\
 \hline
 
@@ -618,6 +609,12 @@ characterize global commerce.
 
 ## Research Rationale
 
+Building on evidence that institutional quality, corruption control, and regulatory
+effectiveness significantly shape trade performance, this study applies the Multiple
+Regression Quadratic Assignment Procedure (MRQAP) and the Generalized Exponential Random
+Graph Model (GERGM) to capture structural interdependencies and trade intensity within the
+global trade network.
+
 In line with recent research on trade networks, we draw on studies that employ the
 Multiple Regression Quadratic Assignment Procedure (MRQAP) to analyze bilateral trade
 flows. For example, [@noauthor_structural_nodate] use MRQAP to identify the economic,
@@ -686,9 +683,6 @@ integrates network dynamics and governance effects, offering a more complete and
 analysis of international trade patterns than alternative approaches.
 
 ## Results (1300 words)
-
--   View the SNA4DS template for reference how to add Code Block to write this part
-    properly
 
 ### MRQAP – Results for Model 1
 
@@ -895,13 +889,13 @@ English Discuss the meaning of your findings in relation to your hypothesis.
 -   What were your topic and research questions again? 1 sentence only
 
     What did you learn from the two analyses you run? Most important point to address 0.5
-    POINTS - Noud
+    POINTS
 
--   Who benefits from your findings? Noud
+-   Who benefits from your findings?
 
--   What remains an open problem? Noud
+-   What remains an open problem?
 
--   Can you give suggestions for future work in this area? Leon
+-   Can you give suggestions for future work in this area?
 
 ## References {.unnumbered}
 
