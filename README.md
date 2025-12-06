@@ -12,12 +12,12 @@ This project examines how similarities in country governance relate to bilateral
 2. Open `Report/templateSNA4DSproject/Report Group 08 Quarto.qmd` and render it with Quarto to generate the full report.
 ## How to load ERGM models
 1. Load the model & View MCMC diagnostic:
-   ergm <- readRDS("path_to_model.rds")
-   ergm
-   par(mfrow = c(1, 1), mar = c(4, 4, 2, 1)) # Set plot parameters
-   ergm::mcmc.diagnostics(ergm)
+   ergm <- readRDS("path_to_model.rds").
+   ergm.
+   par(mfrow = c(1, 1), mar = c(4, 4, 2, 1)) # Set plot parameters.
+   ergm::mcmc.diagnostics(ergm).
    
 3. Load the ergm GOF plot:
-   ergm_plot <- readRDS("path_to_model_GOF_plot.rds")
-   plot(ergm_plot)
+   ergm_plot <- readRDS("path_to_model_GOF_plot.rds").
+   plot(ergm_plot).
  
