@@ -104,19 +104,15 @@ print(edge_list)
 summary(edge_list$weight_millions)
 
 # Plot the distribution of edge weights
+log_trade_value  <- log1p(edge_list$weight_millions)
+
 
 hist(
-  edge_list$weight_millions,
+  log_trade_value,
   breaks = 100,
-  main   = "Distribution of Trade Values (millions USD)",
-  xlab   = "Trade Value in millions USD",
-  col    = "grey"
-)
-# Boxplot to visualize spread
-boxplot(
-  edge_list$weight_millions,
-  horizontal = FALSE,
-  main       = "Boxplot of Trade Values"
+  main   = "Distribution of Trade Values (millions USD) log scale",
+  xlab   = "Trade Value in millions USD log scale",
+  col    = "blue"
 )
 
 ```
@@ -489,4 +485,5 @@ saveRDS(fit.mod3, file = "mod3_ergm_90_gof.rds")
 ```{r}
 save.image("ergm_trade_workspace_90.RData")
 ```
+
 
