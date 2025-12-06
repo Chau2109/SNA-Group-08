@@ -10,3 +10,14 @@ This project examines how similarities in country governance relate to bilateral
 ## How to run
 1. Open `Trade Network Data and Code Base/Economic_Trade_Data.Rmd` in RStudio (or run via `rmarkdown::render`), run each chunk of code.
 2. Open `Report/templateSNA4DSproject/Report Group 08 Quarto.qmd` and render it with Quarto to generate the full report.
+## How to load ERGM models
+1. Load the model & View MCMC diagnostic:
+   ergm <- readRDS("path_to_model.rds")
+   ergm
+   par(mfrow = c(1, 1), mar = c(4, 4, 2, 1)) # Set plot parameters
+   ergm::mcmc.diagnostics(ergm)
+   
+3. Load the ergm GOF plot:
+   ergm_plot <- readRDS("path_to_model_GOF_plot.rds")
+   plot(ergm_plot)
+ 
