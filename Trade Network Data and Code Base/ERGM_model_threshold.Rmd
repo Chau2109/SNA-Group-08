@@ -1,0 +1,489 @@
+---
+title: "ERGM Models for Research Question 2"
+output: html_document
+---
+
+```{r}
+#Install all packages before running
+#install.packages(c("here", "readr", "readxl", "data.table", "snafun", "igraph", "ergm"))
+#dependencies = TRUE, force = TRUE)
+```
+## Data preparation
+
+```{r load_data}
+# Import all datasets
+trade_data <- readxl::read_excel("trade_1988_2021.xlsx")
+wb1 <- readxl::read_excel("P_Data_Extract_From_Doing_Business.xlsx")
+wb2 <- readxl::read_excel("P_Data_Extract_From_World_Development_Indicators.xlsx")
+wb3 <- readxl::read_excel("P_Data_Extract_From_Worldwide_Governance_Indicators.xlsx")
+
+# Convert to data.table for manipulation
+trade_data <- data.table::as.data.table(trade_data)
+wb1 <- data.table::as.data.table(wb1)
+wb2 <- data.table::as.data.table(wb2)
+wb3 <- data.table::as.data.table(wb3)
+```
+
+```{r filter_trade}
+# Select only 2018 observations with valid partners
+trade_data_2018 <- trade_data[
+  Year == 2018 &
+    !ReporterName %in% c("Other Asia, nes", "World", "European Union") &
+    !PartnerName %in% c("Other Asia, nes", "World", "European Union") &
+    `TradeValue in 1000 USD` > 0
+]
+```
+
+```{r clean_doing_business}
+# Clean Doing Business data
+wb1 <- data.table::setnames(wb1, old = names(wb1), new = make.names(names(wb1)))
+wb1 <- wb1[, .(
+  country_code = Country.Code,
+  export_border_time_hrs = Time.to.export..Border.compliance..hours...DB16.20.methodology...TRD.ACRS.BRDR.EXPT.BRDR.COMP.HR.DB1619.,
+  export_border_cost_usd = Trading.across.borders..Cost.to.export..Border.compliance..USD...DB16.20.methodology...TRD.ACRS.BRDR.EXPT.COST.BRDR.COMP.CD.DB1619.,
+  export_doc_time_hrs = Time.to.export..Documentary.compliance..hours...DB16.20.methodology...TRD.ACRS.BRDR.DOC.COMP.HR.DB1619.,
+  import_border_time_hrs = Time.to.import..Border.compliance..hours...DB16.20.methodology...TRD.ACRS.BRDR.IMP.BRDR.COMP.HR.DB1619.,
+  import_border_cost_usd = Trading.across.borders..Cost.to.import..Border.compliance..USD...DB16.20.methodology...TRD.ACRS.BRDR.IMP.COST.BRDR.COMP.CD.DB1619.
+)]
+```
+
+```{r clean_wdi}
+# Clean macro indicators
+wb2 <- data.table::setnames(wb2, old = names(wb2), new = make.names(names(wb2)))
+wb2 <- wb2[, .(
+  country_code = Country.Code,
+  inflation_rate = Inflation..consumer.prices..annual.....FP.CPI.TOTL.ZG.,
+  gdp_growth = GDP.growth..annual.....NY.GDP.MKTP.KD.ZG.,
+  gdp_current_usd = GDP..current.US....NY.GDP.MKTP.CD.
+)]
+```
+
+```{r clean_wgi}
+# Clean governance indicators
+wb3 <- data.table::setnames(wb3, old = names(wb3), new = make.names(names(wb3)))
+wb3 <- wb3[, .(
+  country_code = Country.Code,
+  gov_effectiveness = Government.Effectiveness..Estimate..GE.EST.,
+  regulatory_quality = Regulatory.Quality..Estimate..RQ.EST.,
+  control_corruption = Control.of.Corruption..Estimate..CC.EST.,
+  rule_of_law = Rule.of.Law..Estimate..RL.EST.
+)]
+```
+
+```{r merge_attributes}
+# Merge attribute tables and keep countries observed in trade data
+wb_combined <- merge(wb1, wb2, by = "country_code", all = FALSE)
+wb_combined <- merge(wb_combined, wb3, by = "country_code", all = FALSE)
+wb_combined <- unique(wb_combined, by = "country_code")
+
+trade_countries <- unique(c(trade_data_2018$ReporterISO3, trade_data_2018$PartnerISO3))
+wb_combined <- wb_combined[country_code %in% trade_countries]
+dim(wb_combined)
+
+```
+```{r building_edges}
+# Edge list with numeric weights is Export Value between 2 countries measured in 1000 USD
+edge_list <- data.table::data.table(
+  from = trade_data_2018$ReporterISO3,
+  to = trade_data_2018$PartnerISO3,
+  weight_raw = trade_data_2018$`TradeValue in 1000 USD`
+)
+
+# Use readr::parse_number to handle thousands separators from Excel correctly (2.796.481 -> 2796481)
+edge_list[, weight_raw := as.character(weight_raw)]
+edge_list[, weight_numeric := readr::parse_number(weight_raw)]
+
+# Keep non-missing weights
+edge_list <- edge_list[!is.na(weight_numeric) & weight_numeric > 0]
+
+# Divide by 1000 to change units to Millions USD
+edge_list[, weight_millions := weight_numeric / 1000]
+print(edge_list)
+
+#Summary statistics of edge weights
+summary(edge_list$weight_millions)
+
+# Plot the distribution of edge weights
+
+hist(
+  edge_list$weight_millions,
+  breaks = 100,
+  main   = "Distribution of Trade Values (millions USD)",
+  xlab   = "Trade Value in millions USD",
+  col    = "grey"
+)
+# Boxplot to visualize spread
+boxplot(
+  edge_list$weight_millions,
+  horizontal = FALSE,
+  main       = "Boxplot of Trade Values"
+)
+
+```
+
+```{r threshold}
+#This huge gap tells you:
+
+# Most trade values are relatively small (around a few thousand),
+
+# But a few very large trade relationships push the mean way up.
+# Choose 3rd Quartile as threshold
+
+threshold_90 <- quantile(edge_list$weight_millions, 0.9, na.rm = TRUE)
+edge_list[, tie   := as.integer(weight_millions > threshold_90)]
+print(edge_list)
+
+# Quick density check for the selected threshold
+nodes <- length(unique(c(edge_list$from, edge_list$to)))
+possible_dyads <- nodes * (nodes - 1)
+edges_q3  <- sum(edge_list$tie)
+density_q3  <- edges_q3  / possible_dyads
+density_q3
+
+```
+
+
+
+
+```{r building_vertices}
+# Build vertex table (node attributes)
+vertices <- data.table::copy(wb_combined)
+data.table::setnames(vertices, "country_code", "name")
+
+# Convert all non-name columns to numeric where possible
+cols_to_numeric <- setdiff(names(vertices), "name")
+vertices[, (cols_to_numeric) := lapply(.SD, readr::parse_number), .SDcols = cols_to_numeric]
+
+# Countries that appear as either exporter (from) or importer (to)
+edge_countries <- unique(c(edge_list$from, edge_list$to))
+
+# Intersect with countries for which we have attributes
+common_countries <- intersect(edge_countries, vertices$name)
+length(common_countries)
+
+# Keep only edges between countries that also have attributes
+edge_list <- edge_list[from %in% common_countries & to %in% common_countries]
+
+# Keep only vertices that actually appear in the (from/to) set
+vertices <- vertices[name %in% common_countries]
+print(edge_list)
+
+```
+
+
+
+```{r}
+# Countries in edges
+edge_countries <- unique(c(edge_list$from, edge_list$to))
+
+# Countries with attributes
+vertex_countries <- vertices$name
+
+# Final set of countries in the network
+countries <- sort(intersect(edge_countries, vertex_countries))
+
+length(countries)  # just to see how many
+```
+```{r adjacency_matrix}
+# Initialize matrix with zeros
+trade_matrix <- matrix(
+  0,
+  nrow = length(countries),
+  ncol = length(countries),
+  dimnames = list(countries, countries)  # row/col names
+)
+
+# Match from/to country codes to matrix row/col positions
+row_idx <- match(edge_list$from, countries)
+col_idx <- match(edge_list$to,   countries)
+
+# Fill matrix: for each edge k, put weight_k at [from_k, to_k]
+trade_matrix[cbind(row_idx, col_idx)] <- edge_list$tie
+diag(trade_matrix) <- 0
+
+dim(trade_matrix)
+print(trade_matrix)
+```
+
+
+```{r}
+# Next step is building a Data Frame of Node Covariates
+# Countries in your matrix (must be the same as row/col names)
+countries <- rownames(trade_matrix)
+
+# 1. Take only these countries from vertices
+analysis_vertices <- vertices[name %in% countries]
+
+# 2. Reorder rows of analysis_vertices to match the matrix ordering
+analysis_vertices <- analysis_vertices[match(countries, analysis_vertices$name)]
+print(analysis_vertices)
+
+# 3. Sanity check
+stopifnot(identical(countries, analysis_vertices$name))
+```
+
+```{r}
+# Categorize governance measures into five ordered groups, because they all have value from -2.5-> 2.5. So / to 5 intervals and set 5 categories
+# Governance categories: 5 ordered groups from -2.5 to 2.5
+#category_breaks <- seq(-2.5, 2.5, length.out = 6)
+
+#categorize_attribute <- function(x) {
+  #cut(
+    #x,
+    #breaks         = category_breaks,
+    #labels         = 1:5,
+    #include.lowest = TRUE,
+    #right          = TRUE
+  #)
+#}
+
+# Scale border time and cost using analysis_vertices
+log_border_time  <- log1p(analysis_vertices$export_border_time_hrs)
+log_border_cost  <- log1p(analysis_vertices$export_border_cost_usd)
+
+# Build covariate_data from analysis_vertices, using the scaled vectors
+covariate_data <- data.frame(
+  gdp_growth         = analysis_vertices$gdp_growth,
+  regulatory_quality = analysis_vertices$regulatory_quality,
+  rule_of_law        = analysis_vertices$rule_of_law,
+  inflation_rate     = analysis_vertices$inflation_rate,
+  log_border_time = as.numeric(log_border_time),
+  log_border_cost = as.numeric(log_border_cost),
+  row.names          = analysis_vertices$name
+)
+
+print(covariate_data)
+str(covariate_data)
+
+
+# Quick checks to avoid infinite errors later
+#stopifnot(identical(rownames(trade_matrix), rownames(covariate_data)))
+#stopifnot(!any(!is.finite(as.matrix(covariate_data[, num_cols, drop = FALSE]))))
+#stopifnot(!any(!is.finite(trade_matrix)))
+
+# Replace NA → 0.0 in numeric covariates
+num_cols <- sapply(covariate_data, is.numeric)
+# Logical matrix: TRUE where values are NOT finite (NA, NaN, Inf)
+bad_mask <- !is.finite(num_cols)
+
+covariate_data[, num_cols] <- lapply(covariate_data[, num_cols], function(x) {
+  x[is.na(x)] <- 0
+  return(x)
+})
+
+# Set inflation threshold is 30 and replace inflation > threshold with 0.0 to avoid outlier
+threshold = 30
+covariate_data$inflation_rate[covariate_data$inflation_rate > threshold] <- 0
+print(covariate_data)
+stopifnot(!any(!is.finite(as.matrix(covariate_data[, num_cols, drop = FALSE]))))
+stopifnot(!any(!is.finite(trade_matrix)))
+
+```
+```{r Creating_trade_network}
+# Create a network from trade_matrix
+
+trade_network <- network::network(trade_matrix, 
+                                  matrix.type = "adjacency", 
+                                  directed = TRUE, 
+                                  hyper = FALSE, 
+                                  loops = FALSE, 
+                                  multiple = FALSE, 
+                                  bipartite = FALSE, 
+                                  ignore.eval = TRUE, 
+                                  names.eval = NULL, 
+                                  na.rm = FALSE, 
+                                  edge.check = FALSE)
+
+
+trade_network
+
+# Make sure ordering matches
+stopifnot(identical(
+  network::get.vertex.attribute(trade_network, "vertex.names"),
+  rownames(covariate_data)
+))
+covariate_clean <- data.frame(
+  gdp_growth        = as.numeric(covariate_data$gdp_growth),
+  regulatory_quality = as.numeric(covariate_data$regulatory_quality),
+  rule_of_law        = as.numeric(covariate_data$rule_of_law),
+  inflation_rate     = as.numeric(covariate_data$inflation_rate),
+  log_border_time    = as.numeric(covariate_data$log_border_time),
+  log_border_cost    = as.numeric(covariate_data$log_border_cost),
+  row.names          = rownames(covariate_data)
+)
+
+
+# Now attach each attribute one by one
+for (attr_name in colnames(covariate_clean)) {
+  vals <- covariate_clean[[attr_name]]
+  vals <- as.vector(vals)  # ensure it's a plain vector
+
+  network::set.vertex.attribute(
+    trade_network,
+    attrname = attr_name,
+    value    = vals
+  )
+}
+
+network::list.vertex.attributes(trade_network)
+```
+
+
+```{r Plotting}
+snafun::g_summary(trade_network)
+plot(trade_network)
+
+```
+
+
+```{r}
+
+imports_dt <- edge_list[, .(
+  total_imports = sum(weight_millions, na.rm = TRUE)
+), by = to]
+
+head(imports_dt)
+vnames <- network::get.vertex.attribute(trade_network, "vertex.names")
+
+imports_full <- data.table::data.table(name = vnames)
+
+# Merge totals by country code (to)
+imports_full <- imports_dt[imports_full, on = .(to = name)]
+
+# Countries with no imports in your data will have NA -> set to 0
+imports_full[is.na(total_imports), total_imports := 0]
+
+imports_full[, log_total_imports := log1p(total_imports)]
+
+# Log transformation
+imports_full
+
+network::set.vertex.attribute(
+  trade_network,
+  "log_total_imports",
+  imports_full$log_total_imports
+)
+trade_network
+
+```
+```{r Build baseline model}
+set.seed(342)
+mod_final <- ergm::ergm(trade_network ~ edges + 
+                     absdiff("regulatory_quality") + 
+                     absdiff("rule_of_law") +
+                     nodecov("gdp_growth") +
+                     nodeicov("log_total_imports"))
+                     
+summary(mod_final)
+```
+
+
+```{r Build baseline model}
+set.seed(342)
+mod_final <- ergm::ergm(trade_network ~ edges + 
+                     absdiff("regulatory_quality") + 
+                     absdiff("rule_of_law") +
+                     nodecov("gdp_growth") +
+                     mutual,
+                    control = ergm::control.ergm(MCMC.burnin = 10000,
+                                              MCMC.samplesize = 60000,
+                                              seed = 342,
+                                              parallel = 4,
+                                              MCMLE.MCMC.precision = 0.05,
+                                              MCMLE.maxit = 30))
+
+
+
+summary(mod_final)
+par(mfrow = c(1, 1), mar = c(4, 4, 2, 1))
+ergm::mcmc.diagnostics(mod_final)
+
+```
+
+
+```{r Build final ERGM models - Dyadic Dependent}
+
+mod_final <- ergm::ergm(trade_network ~ edges + 
+                     absdiff("regulatory_quality") + 
+                     absdiff("rule_of_law") +
+                     nodecov("gdp_growth") +
+                     nodeicov("log_total_imports") +
+                     mutual + 
+                     gwidegree(0.25,fixed=T) + 
+                     dgwesp(decay = 0.25, fixed = TRUE, type="OTP"), 
+                    control = ergm::control.ergm(MCMC.burnin = 10000,
+                                              MCMC.samplesize = 60000,
+                                              seed = 342,
+                                              parallel = 4,
+                                              MCMLE.MCMC.precision = 0.05,
+                                              MCMLE.maxit = 40))
+
+
+
+summary(mod_final)
+par(mfrow = c(1, 1), mar = c(4, 4, 2, 1))
+ergm::mcmc.diagnostics(mod_final)
+
+```
+
+```{r}
+set.seed(342)
+mod7 <- ergm::ergm(trade_network ~ edges + 
+                     absdiff("regulatory_quality") + 
+                     absdiff("rule_of_law") +
+                     nodeicov("log_total_imports") +
+                     nodecov("gdp_growth") +
+                     mutual + 
+                     gwidegree(0.03,fixed=TRUE) + 
+                     dgwesp(decay = 0.03, fixed = TRUE, type="OTP") +
+                     dgwesp(decay = 0.03, fixed = TRUE, type = "RTP"),
+                     dgwdsp(decay = 0.03, fixed = TRUE, type = "OTP"), 
+                    control = ergm::control.ergm(MCMC.burnin = 6000,
+                                              MCMC.samplesize = 30000,
+                                              seed = 342,
+                                              parallel = 5,
+                                              MCMLE.MCMC.precision = 0.05,
+                                              MCMLE.maxit = 50))
+
+
+
+summary(mod7)
+par(mfrow = c(1, 1), mar = c(4, 4, 2, 1))
+ergm::mcmc.diagnostics(mod7)
+fit.mod7 <- ergm::gof(mod7)
+snafun::stat_plot_gof(fit.mod7)
+```
+
+```{r}
+set.seed(342)
+mod_final1 <- ergm::ergm(trade_network ~ edges + 
+                     absdiff("regulatory_quality") + 
+                     absdiff("rule_of_law") +
+                     nodeicov("log_total_imports") +
+                     nodecov("gdp_growth") +
+                     mutual + 
+                     gwidegree(0.03,fixed=TRUE) + 
+                     gwodegree(0.03, fixed = TRUE) +
+                     dgwesp(decay = 0.03, fixed = TRUE, type="OTP") +
+                     dgwesp(decay = 0.03, fixed = TRUE, type = "RTP"),
+                     dgwdsp(decay = 0.03, fixed = TRUE, type = "OTP"), 
+                    control = ergm::control.ergm(MCMC.burnin = 6000,
+                                              MCMC.samplesize = 30000,
+                                              seed = 342,
+                                              parallel = 5,
+                                              MCMLE.MCMC.precision = 0.05,
+                                              MCMLE.maxit = 50))
+
+
+
+summary(mod_final1)
+par(mfrow = c(1, 1), mar = c(4, 4, 2, 1))
+ergm::mcmc.diagnostics(mod_final1)
+fit.modfinal1 <- ergm::gof(mod_final1)
+snafun::stat_plot_gof(fit.modfinal1)
+
+```
+
+
+
+
