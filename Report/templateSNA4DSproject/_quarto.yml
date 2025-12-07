@@ -2,4 +2,10 @@ project:
   output-dir: _output
   execute-dir: project
 
-
+format:
+  pdf:
+    keep-tex: true
+    include-in-header:
+      text: |
+        \usepackage{array}
+        \usepackage{pdfpages}  

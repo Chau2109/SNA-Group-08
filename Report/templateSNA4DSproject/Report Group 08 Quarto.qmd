@@ -25,6 +25,8 @@ include-in-header:
       \usepackage{array}
       \usepackage{longtable}  
       \setlength{\parskip}{1.2em}
+      \usepackage{tabularx}
+      
       
 bibliography: SNA project.bib
 csl: apa-6th-edition.csl
@@ -77,7 +79,7 @@ knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 
 {{< pagebreak >}}
 
-## Glossary
+## Glossary {.unnumbered}
 
 ::: {#sec-gloss}
 \setlength{\arrayrulewidth}{0.05pt}
@@ -343,7 +345,7 @@ architecture of the global trade.
 \hline
 \endlastfoot
 
-\textbf{H1b: Regulatory Quality Similarity}  
+\textbf{H2a: Regulatory Quality Similarity}  
 Countries with more similar levels of regulatory quality are expected to engage in higher-value bilateral trade
 &
 \texttt{absdiff(regulatory\_quality)}
@@ -361,7 +363,7 @@ The \texttt{absdiff(rule\_of\_law)} term captures how similar institutions reduc
 \\
 \hline
 
-\textbf{H3b: Reciprocity}  
+\textbf{H2c: Reciprocity}  
 Bilateral export relationships are expected to display reciprocity, such that higher export volumes from one country to its trading partner are associated with higher export volumes received in return from that partner
 &
 \texttt{mutual}
@@ -370,7 +372,7 @@ The \texttt{mutual} term captures the tendency for bilateral trade relationships
 \\
 \hline
 
-\textbf{H4b: Transitivity}  
+\textbf{H2d: Transitivity}  
 Trade relationships exhibit transitivity, where countries are more likely to trade intensively with partners of their existing trading partners, resulting in clustered patterns of export ties
 &
 \texttt{dgwesp(decay = 0.25, fixed = TRUE, type="OTP")}
@@ -379,12 +381,12 @@ The \texttt{dgwesp(decay = 0.25, fixed = TRUE, type="OTP")} term captures the te
 \\
 \hline
 
-\textbf{H5b: Popularity}  
+\textbf{H2e: Popularity}  
 Countries that already receive high levels of imports from many partners are likely to become attractive trade destinations, making others more likely to export to them
 &
-\texttt{nodeicov("log_total_imports")}
+\texttt{nodeicov("log\_total\_imports")}
 &
-The \texttt{nodeicov("log_total_imports")} term captures the tendency for countries with high import volumes to attract additional export ties. Large import markets signal strong demand and institutional reliability, lowering perceived risks for new exporters and generating self-reinforcing patterns in which highly connected import destinations continue to receive a disproportionate share of global exports
+The \texttt{nodeicov("log\_total\_imports")} term captures the tendency for countries with high import volumes to attract additional export ties. Large import markets signal strong demand and institutional reliability, lowering perceived risks for new exporters and generating self-reinforcing patterns in which highly connected import destinations continue to receive a disproportionate share of global exports
 \\
 \hline
 
@@ -682,9 +684,9 @@ clustering. Together, these methods provide a theoretically coherent framework t
 integrates network dynamics and governance effects, offering a more complete and precise
 analysis of international trade patterns than alternative approaches.
 
-## Results (1300 words)
+## Results
 
-### MRQAP – Results for Model 1
+### MRQAP – Results for Research Question 1
 
 We estimate a number of MRQAP models with bilateral trade intensity between country pairs
 as the dependent network in order to address Research Question 1. According to our
@@ -879,12 +881,110 @@ intensity. As a result, the MRQAP analysis does not support either H1a or H2a. T
 drivers of variation in bilateral trade intensity in this network seem to be basic
 economic capacity and modest macroeconomic stability rather than governance similarity.
 
-### ERGM – 2.5 POINTS - Chau + Leon
+### ERGM – Result for Research Question 2
 
-Present your results appropriately (plots, tables…) and discuss your findings in plain
-English Discuss the meaning of your findings in relation to your hypothesis.
+To address our hypothesis, we constructed the final model using a set of ERGM terms, which
+are defined in Table \ref{tbl_terms_testing}.
 
-## Conclusion (1000 words)
+\begin{longtable}{p{10cm} p{4cm}}
+\caption{ERGM Terms and Testing Overview}
+\label{tbl_terms_testing} \\
+\toprule
+\textbf{ERGM Terms} & \textbf{Testing} \\
+\midrule
+\endhead
+
+\midrule
+\multicolumn{2}{r}{\footnotesize\emph{Continued on next page}} \\
+\endfoot
+
+\bottomrule
+\endlastfoot
+
+absdiff("regulatory\_quality") & Hypothesis H2a \\
+absdiff("rule\_of\_law")  & Hypothesis H2b \\
+mutual & Hypothesis H2c \\
+dgwesp(decay = 0.025, fixed =TRUE, type="OTP") & Hypothesis H2d \\
+nodeicov("log\_total\_imports") & Hypothesis H2e \\
+gwidegree(0.025, fixed = TRUE) & Control variable \\
+nodecov("gdp\_growth") & Control variable \\
+dgwdsp(decay = 0.025, fixed =TRUE, type="OTP") & Control variable \\
+
+\end{longtable}
+
+Comparing the two model specifications (Table \ref{tbl_ergm_comparison}), based on different binarisation thresholds (top 10% vs. top 25% of trade values), shows clear differences in performance. Using standard fit measures, Model 2 (threshold 0.9) performs substantially better than Model 1 (threshold 0.75), with much lower AIC and BIC values. This suggests the strongest export ties follow more systematic and predictable patterns. Once reciprocity, clustering, popularity, and country characteristics are included, high-value export relationships become highly structured. In contrast, relaxing the threshold in Model 1 introduces more medium-intensity trade, which creates greater variability and makes the results less clearly explained by the same mechanisms. Overall, the most intense export links follow stronger network rules than weaker or moderate ties.
+
+From the non-structural perspective, both models shows a consistent message. Countries with higher overall import volume are much more likely to be the recipients of strong export ties in both models. This effect is large and highly significant in both models (with coefficients ≈0.44 and 0.55), which directly supports H2e: large import markets act as trade magnets and attract a large share of strong export relationships. We also find that countries with more similar regulatory quality are slightly more likely to share a strong export tie, which is consistent with H2a, although the magnitude is modest compared with import volume and the structural effects. By contrast, similarity in rule-of-law conditions does not exhibit a robust pattern across models, so we do not find support for H2b in this static 2018 snapshot. Finally, higher GDP growth of exporters is associated with a minimal reduction in the probability of sending strong ties (coefficients around −0.01 to −0.02). Although statistically significant, this effect remains substantively minor relative to import volume and the structural terms.
+
+The structural terms are very stable across Model 1 and Model 2 and strongly support
+H2c, H2d and H2e.First, reciprocity is extremely strong (with coefficients ≈3.14 and 3.61): export relationships are far more likely to be mutual than one-sided, supporting H2c and matching the idea that strong trade ties usually reflect mutual economic dependence and negotiated agreements rather than purely unilateral flows. Second, we find clear evidence of clustering and triadic closure: A positive coefficient of transitivity term (dgwesp.OTP) implies that countries that share trading partners are much more likely to also trade strongly with each other. This is the mechanism behind H2d and aligns with the presence of regional blocs and tightly knit trade clusters, where “partners of my partners” tend to become my partners as well. Third, the popularity effect, shown through the positive geometrically weighted in-degree term, appears in both models: countries that already receive many export ties are especially likely to attract additional exporters. This reinforces hub-like structures in the network and, together with the strong effect of being a large importer, provides further support for H2e.
+
+
+::: {data-quarto-disable-processing="true"}
+```{=latex}
+\begin{longtable}{p{4.5cm}| *{3}{>{\centering\arraybackslash}p{1.6cm}} | *{3}{>{\centering\arraybackslash}p{1.6cm}}}
+\caption{Comparison of ERGM Results for Trade Networks (Thresholds 75\% and 90\%)} 
+\label{tbl_ergm_comparison} \\
+\hline
+\multicolumn{1}{p{4.5cm}|}{Term} &
+\multicolumn{3}{c|}{Model Threshold 0.75} &
+\multicolumn{3}{c}{Model Threshold 0.90} \\
+\cline{2-4} \cline{5-7}
+& Estimate & Std. Error & \multicolumn{1}{c|}{Signif.} & Estimate & Std. Error & Signif. \\
+\hline
+\endhead
+%
+\hline
+\multicolumn{7}{r}{\footnotesize\emph{Continued on next page}} \\
+\endfoot
+%
+\hline
+\multicolumn{7}{p{\linewidth}}{\footnotesize\emph{Note}: GW = geometrically weighted; OTP = outgoing two-paths; Signif. codes: p < 0.001 '***', p < 0.01 '**', p < 0.05 '*', p < 0.1 '.'} \\
+\endlastfoot
+%
+Edges                          & -13.863 & 0.360 & *** & -15.646 & 0.418 & *** \\
+Regulatory Quality (absdiff)  & -0.112 & 0.032 & *** & -0.210 & 0.044 & *** \\
+Rule of Law (absdiff)         & 0.024  & 0.032 &     & -0.009 & 0.043 &     \\
+Log Total Imports (nodeicov)   & 0.438  & 0.010 & *** & 0.554  & 0.018 & *** \\
+GDP Growth                     & -0.011 & 0.004 & **  & -0.015 & 0.005 & **  \\
+Mutual                         & 3.139  & 0.050 & *** & 3.609  & 0.077 & *** \\
+Import popularity (gwideg)  & 3.839  & 0.313 & *** & 2.883  & 0.278 & *** \\
+Transitivity effect (dgwesp.OTP) & 4.003  & 0.280 & *** & 3.286  & 0.202 & *** \\
+Dyadwise shared partners (gwdsp.OTP)        & -0.108 & 0.003 & *** & -0.081 & 0.004 & *** \\
+\hline
+\textbf{AIC} & \multicolumn{3}{c|}{16117} & \multicolumn{3}{c}{8930} \\
+\textbf{BIC} & \multicolumn{3}{c|}{16193} & \multicolumn{3}{c}{9005} \\
+\end{longtable}
+```
+:::
+
+Compared with the earlier MRQAP analysis, the ERGM results provide a more nuanced view. While MRQAP attributed most variation in trade intensity to economic fundamentals—especially market size—and found only a weak role for governance, the ERGM confirms those fundamentals and adds that network structure itself is central: reciprocity, clustering, and the prominence of major import hubs help explain which country pairs trade most intensely. This echoes findings by [@noauthor_analysis_nodate], which identifies key structural drivers such as reciprocity and economic scale in driving strong commodity flows.
+
+On the other hand, the modest effect of governance similarity contrasts with conclusions from  where institutional quality and infrastructure significantly influenced bilateral trade flows [@de_groot_institutional_2004-1]. This suggests that while institutions may matter for whether trade occurs at all, once strong ties exist, network structure and economic scale dominate the intensity of those ties. Ultimately, the 2018 export network appears highly reciprocal, clustered, and hub-dominated, with large import markets and structural network dynamics exerting far more influence on strong export relationships than governance similarity. In this static view we therefore find strong support for H2c, H2d, and H2e, partial support for H2a, and no support for H2b.
+
+The trace plots for both threshold specifications (Appendix \ref{sec-mcmc-75}, Appendix \ref{sec-mcmc-90}) show stable and well-mixed Markov chains, indicating successful convergence of the Monte Carlo Maximum Likelihood Estimation (MCMLE) algorithm. The corresponding density plots exhibit unimodal and regular distributions that are centered around stable means, indicating consistent and robust parameter estimation across iterations.
+
+#### Goodness of Fit
+
+The results of the goodness of fit analysis of Model 1 (threshold 0.75) and Model 2
+(threshold 0.9) are provided in Figure \ref{fig-mod-75} and Figure \ref{fig-mod-90}, indicating that
+both models accurately reproduce the sufficient statistics they condition on: for all
+included terms, the observed statistics fall well inside the boxplots of the simulated
+networks, so the models are internally consistent. However, Model 1 captures the overall network structure more closely than Model 2.
+
+For in-degree and out-degree, Model 1 roughly tracks the observed distributions but still underestimates how many countries have very few partners. This problem is stronger in Model 2, where the real network has more peripheral countries and a few dominant hubs than the simulations reproduce.
+
+Minimum geodesic distance diagnostics show that the observed network has many more very short paths, indicating a more tightly connected structure than either model implies. Edgewise shared partner diagnostics similarly reveal that both models struggle to reproduce the combination of high local clustering and short global distances, with the mismatch again larger for Model 2. This is consistent with using a higher threshold: keeping only the top 10% of trade ties produces an extremely sparse, hub-dominated network, in which only the very strongest ties are kept, making our relatively generic ERGM cannot fully reproduce it, whereas the denser Model 1 network is easier to approximate.
+
+![The Goodness of Fit in the stimulated networks with threshold 0.75. The minimum geodesic
+distance, in degree, out degree and edge-wise shared partners are
+captured](figures/gof_combined_plot_75.png){#fig-mod-75 fig-pos="H" width=85% fig-align="center"}
+
+![The Goodness of Fit in the stimulated networks with threshold 0.9. The minimum geodesic
+distance, in degree, out degree and edge-wise shared partners are
+captured](figures/gof_combined_plot_90.png){#fig-mod-90 fig-pos="H" width=85% fig-align="center"}
+
+## Conclusion
 
 -   What were your topic and research questions again? 1 sentence only
 
@@ -897,14 +997,45 @@ English Discuss the meaning of your findings in relation to your hypothesis.
 
 -   Can you give suggestions for future work in this area?
 
-## References {.unnumbered}
+## References
 
 ::: {#refs}
 :::
 
+## Appendix 
+
+### Appendix A: MCMC Diagnostics of ERGM model applying 0.75 threshold  {#sec-mcmc-75}
+
+```{r}
+#| echo: false 
+#| results: asis 
+#| warning: false 
+library(pdftools) 
+n <- pdf_info("figures/mcmc_diagnostics_mod75.pdf")$pages 
+for (i in 1:n) { 
+  cat(sprintf("![](figures/mcmc_diagnostics_mod75.pdf){page=%d width=75%%}\n\n", i))  #cat("\\newpage\n\n") 
+}
+```
+
 {{< pagebreak >}}
 
-## Technology statement
+### Appendix B: MCMC Diagnostics of ERGM model applying 0.9 threshold  {#sec-mcmc-90}
+
+```{r}
+#| echo: false 
+#| results: asis 
+#| warning: false 
+library(pdftools) 
+n <- pdf_info("figures/mcmc_diagnostics_mod90.pdf")$pages
+for (i in 1:n) { 
+  cat(sprintf("![](figures/mcmc_diagnostics_mod90.pdf){page=%d width=75%%}\n\n", i))  #cat("\\newpage\n\n") 
+}
+
+```
+
+{{< pagebreak >}}
+
+## Technology statement {.unnumbered}
 
 During the preparation of this work, we used **ChatGPT** to **check spelling, grammar,
 coherence, syntax and support our brainstorming process**. The sections affected by the

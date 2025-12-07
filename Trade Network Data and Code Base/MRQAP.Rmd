@@ -2,8 +2,6 @@
 ```{r}
 #Install all packages before running
 #install.packages(c("here", "readr", "readxl", "data.table", "snafun", "igraph", "gergm"))
-#remotes::install_github("matthewjdenny/GERGM",
-#dependencies = TRUE, force = TRUE)
 ```
 
 
@@ -167,7 +165,7 @@ edge_list <- data.table::data.table(
 ```
 
 ```{r}
-# Prepare network data for MRQAP and GERGM. Create Trade graph based on vertex and edge_list
+# Prepare network data for MRQAP. Create Trade graph based on vertex and edge_list
 library(data.table)
 
 ## 1. CLEAN TRADE VALUES AND AGGREGATE DYADS --------------------------
@@ -290,6 +288,7 @@ class(node_covariates)   # "data.frame"
 dim(node_covariates)
 dim(trade_matrix_gergm)
 ```
+
 ```{r}
 # Running Research Question 1 - H1  (Silvia)
 #prepare for mrqap
@@ -342,8 +341,6 @@ mod1 <- sna::netlm(
 mod1$names <- c("Intercept", "GDP_mean", "Inflation_diff")
 summary(mod1)
 
-
-# Testing Model performance & Result Interpretation (Check theory about MRQAP and Step 3, 4, 5 in https://docs.google.com/document/d/1TYa1N20vVsV6F83ZtIQqayogQ-0-fUSLKy6a9MPEjYU/edit?tab=t.0)
 
 ```
 
@@ -433,78 +430,9 @@ m_test <- readRDS("models/mod_H1a_H2a.rds")
 names(m_test)
 ```
 
-```{r}
-# GERGM
-# 1. Building baseline model first (Edges + 1 exogenous attribute)
-# NOTE: THis have error, I am trying to figure it out later, the rest work fine
-trade_formula <- trade_matrix_gergm ~
-  edges +
-  absdiff("regulatory_quality_z") 
-  
-```
-
-
-```{r}
-
-gergm_H3b <- GERGM::gergm(
-  formula                        = trade_formula,
-  covariate_data                 = node_covariates,
-  number_of_networks_to_simulate = 100000,
-  thin                           = 1/1000,
-  proposal_variance              = 0.05,
-  MCMC_burnin                    = 1000,
-  convergence_tolerance          = 0.5,
-  transformation_type            = "Gaussian",  # I'd start with Gaussian now
-  parallel                       = TRUE,
-  cores                          = 8
-)
-
-GERGM::Trace_Plot(gergm_H3b)
-GERGM::Estimate_Plot(gergm_H3b)
-
-
-```
-
-
-```{r}
-# Building more complicated models by adding more terms
 
 
 
-# Testing Model Goodness of Fit & MCMC & Result Interpretation (Check Step 3, 4, 5 in https://docs.google.com/document/d/1TYa1N20vVsV6F83ZtIQqayogQ-0-fUSLKy6a9MPEjYU/edit?tab=t.0)
-
-## Note: Running MCMC takes very long
-
-
-```
-
-
-
-```{r}
-# EDA: Visualization
-# Create the plot
-ggplot2::ggplot(top_partnerships, ggplot2::aes(x = reorder(partnership, weight), y = trade_billions)) +
-  ggplot2::geom_col(fill = "coral", alpha = 0.8) +
-  ggplot2::coord_flip() +
-  ggplot2::labs(
-    title = "Top 10 Bilateral Trade Partnerships (2018)",
-    subtitle = "Largest individual trade flows between country pairs",
-    x = NULL,
-    y = "Trade Value (Billion USD)"
-  ) +
-  ggplot2::theme_minimal() +
-  ggplot2::theme(
-    plot.title = ggplot2::element_text(hjust = 0, face = "bold", size = 14),
-    plot.subtitle = ggplot2::element_text(hjust = 0, size = 10, color = "gray40"),
-    axis.text.y = ggplot2::element_text(size = 10),
-    axis.text.x = ggplot2::element_text(size = 10),
-    axis.title = ggplot2::element_text(size = 11, face = "bold"),
-    panel.grid.major.y = ggplot2::element_blank()
-  )
-
-ggplot2::ggsave("top_partners.png", width = 8, height = 5, dpi = 300)
-
-```
 
 
 
