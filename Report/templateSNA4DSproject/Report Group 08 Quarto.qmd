@@ -385,6 +385,7 @@ The \texttt{dgwesp(decay = 0.25, fixed = TRUE, type="OTP")} term captures the te
 Countries that already receive high levels of imports from many partners are likely to become attractive trade destinations, making others more likely to export to them
 &
 \texttt{nodeicov("log\_total\_imports")}
+\texttt{nodeicov("log\_total\_imports")}
 &
 The \texttt{nodeicov("log\_total\_imports")} term captures the tendency for countries with high import volumes to attract additional export ties. Large import markets signal strong demand and institutional reliability, lowering perceived risks for new exporters and generating self-reinforcing patterns in which highly connected import destinations continue to receive a disproportionate share of global exports
 \\
@@ -688,50 +689,56 @@ analysis of international trade patterns than alternative approaches.
 
 ### MRQAP – Results for Research Question 1
 
-We estimate a number of MRQAP models with bilateral trade intensity between country pairs
-as the dependent network in order to address Research Question 1. According to our
-hypotheses, regulatory quality similarity (H1a) and corruption control similarity (H2a)
-are the primary predictors that capture similarities in governance characteristics. We use
-inflation dissimilarity and the dyad's mean GDP as controls in every specification. We
-employ MRQAP with 5,000 QAP permutations to obtain network-robust p-values because trade
-relations between dyads are not independent.
+We estimate a set of MRQAP models with bilateral trade intensity between country pairs as
+the dependent network to answer Research Question 1. In line with recent MRQAP studies on
+trade in lithium-ion batteries and rare earth elements [@noauthor_structural_nodate;
+@hu_impacts_2023], the models are specified stepwise. Model 0 only includes the dyadic
+average of GDP (GDP_mean); Model 1 adds inflation dissimilarity; Model H1a adds regulatory
+quality similarity; and the final Model 1 MRQAP (H1a+H2a) adds corruption control
+similarity. All models generate network-robust p-values using 5,000 QAP permutations.
 
-We start with two baseline models that solely take economic covariates into account. The
-GDP dyadic average is included in Model 0. This model already explains about half of the
-variance in bilateral trade intensity (R² ≈ 0.50), as @tbl-mrqap-fit demonstrates. This
-suggests that economic size is a very strong predictor of how intensely countries trade.
-According to the permu, the GDP_mean coefficient is large, positive, and highly
-significant in all models (about 0.31).
+The baseline results highlight the dominant role of economic size. Model 0 already
+explains around half of the variance in bilateral trade intensity (R² \~ 0.50), and the
+GDP_mean coefficient is large, positive, and highly significant (\~0.31), consistent with
+gravity-model evidence that higher-GDP countries trade more intensively with each other
+[@leitao_gravity_2024]. A small negative coefficient on Inflation_diff with a marginal
+two-tailed permutation p-value (\~ 0.07–0.09) indicates that dyads with more similar
+inflation rates tend to trade slightly more when inflation dissimilarity is added in
+Model 1. However, the overall fit improves only modestly: MSE decreases and R² increases
+slightly, while AIC and BIC change little (@tbl-mrqap-fit).
 
-Model 1 incorporates differences in inflation between pairs of countries. Dyads with more
-similar inflation rates typically engage in more intense trading, as indicated by the
-negative coefficient on Inflation_diff. Its two-tailed permutation p-value, however, is
-only marginally significant (between 0.07 and 0.09), indicating that this relationship is
-not as strong as the GDP effect. The overall fit is barely affected by the inclusion of
-inflation dissimilarity: When compared to the GDP-only baseline, R2 rises slightly and
-mean squared error (MSE) falls slightly, but AIC and BIC values only slightly improve
-(@tbl-mrqap-fit).
+We add regulatory quality similarity (RegQual_similarity) to Model H1a in order to test
+H1a. The Worldwide Governance Indicators, which report scores on a -2.5 to 2.5 scale, are
+used to measure regulatory quality. We standardise these scores to mean zero and unit
+variance, and we define similarity as the negative absolute difference between the
+standardised values. Therefore, more similar regulatory environments between two countries
+are indicated by higher RegQual_similarity. In Model H1a, the coefficient on
+RegQual_similarity is positive but close to zero and statistically non-significant, while
+the effects of GDP_mean and Inflation_diff remain essentially unchanged. Model-fit
+statistics in @tbl-mrqap-fit show that including regulatory quality similarity barely
+affects R², MSE, AIC, or BIC relative to the purely economic specifications.
 
-To test H1a, we next present our first governance similarity metric, regulatory quality
-similarity. Higher values indicate more similar regulatory environments because this
-variable (RegQual_similarity) is calculated as the negative absolute difference between
-the standardised regulatory quality scores of various nations. The strong positive effect
-of GDP_mean and the weak negative effect of Inflation_diff are essentially unchanged in
-Model H1a (not shown separately), while the coefficient on RegQual_similarity is positive
-but very small in magnitude and statistically non-significant. In comparison to the purely
-economic baseline, adding regulatory quality similarity hardly affects R2, MSE, AIC, or
-BIC, according to the model fit statistics in @tbl-mrqap-fit.
+Finally, Model 1 MRQAP adds corruption control similarity (CorrControl_similarity), built
+analogously from the control-of-corruption indicator (also ranging from -2.5 to 2.5 and
+standardised before constructing the similarity term). The full coefficient set is
+reported in @tbl-mrqap-coefs. Both RegQual_similarity and CorrControl_similarity have
+relatively large two-tailed permutation p-values (\~ 0.11 and 0.10), indicating no
+statistically significant effect at conventional levels. RegQual_similarity is small and
+positive, while CorrControl_similarity is small and negative. @fig-mrqap-coefs visualises
+these results: GDP_mean clearly dominates, Inflation_diff shows a modest negative
+association, and both governance similarity terms have bars that are effectively
+indistinguishable from zero. This pattern contrasts with earlier gravity-type findings
+that institutional similarity can raise trade volumes [@de_groot_institutional_2004],
+suggesting that such effects may be weaker once economic size and basic macroeconomic
+conditions are controlled for.
 
-Lastly, the governance similarity metrics RegQual_similarity and CorrControl_similarity
-are included in Model 1 MRQAP (Model H1a+H2a in @tbl-mrqap-fit). The complete set of
-coefficients is reported in @tbl-mrqap-coefs. Once more, the RegQual_similarity estimate
-is small and positive (\~ 0.013), whereas the CorrControl_similarity estimate is small and
-negative (\~ –0.012). Crucially, after controlling for GDP and inflation, both
-coefficients have comparatively large two-tailed permutation p-values (approximately 0.11
-and 0.10, respectively), suggesting that neither effect is statistically significant at
-conventional levels. On the other hand, Inflation_diff continues to show a slight
-negative, marginally significant effect, and GDP_mean maintains a strong, highly
-significant positive association with trade intensity.
+When combined, the MRQAP results show no statistically significant evidence that
+similarities in corruption control or regulatory quality, as measured here, lead to
+consistently higher trade intensity between nations. Rather, they show that basic economic
+size and modest macroeconomic stability are more important for explaining how strongly
+nations trade in 2018 than governance similarity. The existence of a trade relationship
+may still be influenced by governance; we revisit this issue in the GERGM analysis in the
+following section.
 
 @tbl-mrqap-coefs summarizes the MRQAP estimates for Model 1, focusing on the two
 governance similarity terms and the controls.
@@ -758,17 +765,6 @@ coef_table <- coef_mat |>
 
 knitr::kable(coef_table, digits = 3)
 ```
-
-The estimated coefficients from Model 1 (not including the intercept) are shown in Figure
-@fig-mrqap-coefs. With a significantly larger positive bar than any other term, the plot
-emphasises GDP_mean's dominant role. A weaker effect is indicated by the Inflation_diff
-bar, which is negative and noticeably smaller. The absolute value of the bars for
-RegQual_similarity and CorrControl_similarity is nearly zero, which graphically supports
-their lack of a significant and statistical influence on trade intensity.
-
-To assess overall model performance more systematically, we compare mean squared error
-(MSE), R², AIC and BIC across the four specifications (baseline with GDP only, baseline
-plus inflation, H1a, and H1a+H2a). @tbl-mrqap-fit shows these metrics.
 
 ```{r}
 #| label: tbl-mrqap-fit
@@ -830,15 +826,6 @@ model_fit <- tibble(
 knitr::kable(model_fit, digits = 3)
 ```
 
-The model comparison in @tbl-mrqap-fit demonstrates that, in addition to the economic
-controls, governance similarity adds minimal explanatory power. When switching from the
-baseline models to the governance-augmented models, improvements in MSE, AIC, and BIC are
-minimal, and R2 stays near 0.50 for all four specifications. This implies that rather than
-similarity in the two governance dimensions taken into consideration, economic size (and
-to a lesser extent, inflation differences) accounts for the majority of the explainable
-variation in bilateral trade intensity in our data.
-
-To visualize the contributions of the different predictors in Model 1, Figure
 @fig-mrqap-coefs plots the estimated coefficients (excluding the intercept). This
 highlights the relative magnitude and direction of the effects.
 
@@ -863,23 +850,6 @@ ggplot(coef_plot, aes(x = Term, y = Estimate)) +
     title = "MRQAP Model 1 coefficients"
   )
 ```
-
-The estimated coefficients from Model 1 (not including the intercept) are shown in Figure
-@fig-mrqap-coefs. With a significantly larger positive bar than any other term, the plot
-emphasises GDP_mean's dominant role. A weaker effect is indicated by the Inflation_diff
-bar, which is negative and noticeably smaller. The absolute value of the bars for
-RegQual_similarity and CorrControl_similarity is nearly zero, which graphically supports
-their lack of a significant and statistical influence on trade intensity.
-
-When combined, these MRQAP findings only partially support Research Question 1. Economic
-fundamentals clearly influence the intensity of bilateral trade: country pairs with higher
-combined GDP trade significantly more, and there is some evidence that stronger trade ties
-are linked to macroeconomic similarity (lower inflation differences). However, once these
-economic factors are considered, we find no evidence that similarities in regulatory
-quality or corruption control, as measured here, result in systematically higher trade
-intensity. As a result, the MRQAP analysis does not support either H1a or H2a. The primary
-drivers of variation in bilateral trade intensity in this network seem to be basic
-economic capacity and modest macroeconomic stability rather than governance similarity.
 
 ### ERGM – Result for Research Question 2
 
@@ -912,13 +882,45 @@ dgwdsp(decay = 0.025, fixed =TRUE, type="OTP") & Control variable \\
 
 \end{longtable}
 
-Comparing the two model specifications (Table \ref{tbl_ergm_comparison}), based on different binarisation thresholds (top 10% vs. top 25% of trade values), shows clear differences in performance. Using standard fit measures, Model 2 (threshold 0.9) performs substantially better than Model 1 (threshold 0.75), with much lower AIC and BIC values. This suggests the strongest export ties follow more systematic and predictable patterns. Once reciprocity, clustering, popularity, and country characteristics are included, high-value export relationships become highly structured. In contrast, relaxing the threshold in Model 1 introduces more medium-intensity trade, which creates greater variability and makes the results less clearly explained by the same mechanisms. Overall, the most intense export links follow stronger network rules than weaker or moderate ties.
+Comparing the two model specifications (Table \ref{tbl_ergm_comparison}), based on
+different binarisation thresholds (top 10% vs. top 25% of trade values), shows clear
+differences in performance. Using standard fit measures, Model 2 (threshold 0.9) performs
+substantially better than Model 1 (threshold 0.75), with much lower AIC and BIC values.
+This suggests the strongest export ties follow more systematic and predictable patterns.
+Once reciprocity, clustering, popularity, and country characteristics are included,
+high-value export relationships become highly structured. In contrast, relaxing the
+threshold in Model 1 introduces more medium-intensity trade, which creates greater
+variability and makes the results less clearly explained by the same mechanisms. Overall,
+the most intense export links follow stronger network rules than weaker or moderate ties.
 
-From the non-structural perspective, both models shows a consistent message. Countries with higher overall import volume are much more likely to be the recipients of strong export ties in both models. This effect is large and highly significant in both models (with coefficients ≈0.44 and 0.55), which directly supports H2e: large import markets act as trade magnets and attract a large share of strong export relationships. We also find that countries with more similar regulatory quality are slightly more likely to share a strong export tie, which is consistent with H2a, although the magnitude is modest compared with import volume and the structural effects. By contrast, similarity in rule-of-law conditions does not exhibit a robust pattern across models, so we do not find support for H2b in this static 2018 snapshot. Finally, higher GDP growth of exporters is associated with a minimal reduction in the probability of sending strong ties (coefficients around −0.01 to −0.02). Although statistically significant, this effect remains substantively minor relative to import volume and the structural terms.
+From the non-structural perspective, both models shows a consistent message. Countries
+with higher overall import volume are much more likely to be the recipients of strong
+export ties in both models. This effect is large and highly significant in both models
+(with coefficients ≈0.44 and 0.55), which directly supports H2e: large import markets act
+as trade magnets and attract a large share of strong export relationships. We also find
+that countries with more similar regulatory quality are slightly more likely to share a
+strong export tie, which is consistent with H2a, although the magnitude is modest compared
+with import volume and the structural effects. By contrast, similarity in rule-of-law
+conditions does not exhibit a robust pattern across models, so we do not find support for
+H2b in this static 2018 snapshot. Finally, higher GDP growth of exporters is associated
+with a minimal reduction in the probability of sending strong ties (coefficients around
+−0.01 to −0.02). Although statistically significant, this effect remains substantively
+minor relative to import volume and the structural terms.
 
-The structural terms are very stable across Model 1 and Model 2 and strongly support
-H2c, H2d and H2e.First, reciprocity is extremely strong (with coefficients ≈3.14 and 3.61): export relationships are far more likely to be mutual than one-sided, supporting H2c and matching the idea that strong trade ties usually reflect mutual economic dependence and negotiated agreements rather than purely unilateral flows. Second, we find clear evidence of clustering and triadic closure: A positive coefficient of transitivity term (dgwesp.OTP) implies that countries that share trading partners are much more likely to also trade strongly with each other. This is the mechanism behind H2d and aligns with the presence of regional blocs and tightly knit trade clusters, where “partners of my partners” tend to become my partners as well. Third, the popularity effect, shown through the positive geometrically weighted in-degree term, appears in both models: countries that already receive many export ties are especially likely to attract additional exporters. This reinforces hub-like structures in the network and, together with the strong effect of being a large importer, provides further support for H2e.
-
+The structural terms are very stable across Model 1 and Model 2 and strongly support H2c,
+H2d and H2e.First, reciprocity is extremely strong (with coefficients ≈3.14 and 3.61):
+export relationships are far more likely to be mutual than one-sided, supporting H2c and
+matching the idea that strong trade ties usually reflect mutual economic dependence and
+negotiated agreements rather than purely unilateral flows. Second, we find clear evidence
+of clustering and triadic closure: A positive coefficient of transitivity term
+(dgwesp.OTP) implies that countries that share trading partners are much more likely to
+also trade strongly with each other. This is the mechanism behind H2d and aligns with the
+presence of regional blocs and tightly knit trade clusters, where “partners of my
+partners” tend to become my partners as well. Third, the popularity effect, shown through
+the positive geometrically weighted in-degree term, appears in both models: countries that
+already receive many export ties are especially likely to attract additional exporters.
+This reinforces hub-like structures in the network and, together with the strong effect of
+being a large importer, provides further support for H2e.
 
 ::: {data-quarto-disable-processing="true"}
 ```{=latex}
@@ -958,31 +960,65 @@ Dyadwise shared partners (gwdsp.OTP)        & -0.108 & 0.003 & *** & -0.081 & 0.
 ```
 :::
 
-Compared with the earlier MRQAP analysis, the ERGM results provide a more nuanced view. While MRQAP attributed most variation in trade intensity to economic fundamentals—especially market size—and found only a weak role for governance, the ERGM confirms those fundamentals and adds that network structure itself is central: reciprocity, clustering, and the prominence of major import hubs help explain which country pairs trade most intensely. This echoes findings by [@noauthor_analysis_nodate], which identifies key structural drivers such as reciprocity and economic scale in driving strong commodity flows.
+Compared with the earlier MRQAP analysis, the ERGM results provide a more nuanced view.
+While MRQAP attributed most variation in trade intensity to economic
+fundamentals—especially market size—and found only a weak role for governance, the ERGM
+confirms those fundamentals and adds that network structure itself is central:
+reciprocity, clustering, and the prominence of major import hubs help explain which
+country pairs trade most intensely. This echoes findings by [@noauthor_analysis_nodate],
+which identifies key structural drivers such as reciprocity and economic scale in driving
+strong commodity flows.
 
-On the other hand, the modest effect of governance similarity contrasts with conclusions from  where institutional quality and infrastructure significantly influenced bilateral trade flows [@de_groot_institutional_2004-1]. This suggests that while institutions may matter for whether trade occurs at all, once strong ties exist, network structure and economic scale dominate the intensity of those ties. Ultimately, the 2018 export network appears highly reciprocal, clustered, and hub-dominated, with large import markets and structural network dynamics exerting far more influence on strong export relationships than governance similarity. In this static view we therefore find strong support for H2c, H2d, and H2e, partial support for H2a, and no support for H2b.
+On the other hand, the modest effect of governance similarity contrasts with conclusions
+from where institutional quality and infrastructure significantly influenced bilateral
+trade flows [@de_groot_institutional_2004-1]. This suggests that while institutions may
+matter for whether trade occurs at all, once strong ties exist, network structure and
+economic scale dominate the intensity of those ties. Ultimately, the 2018 export network
+appears highly reciprocal, clustered, and hub-dominated, with large import markets and
+structural network dynamics exerting far more influence on strong export relationships
+than governance similarity. In this static view we therefore find strong support for H2c,
+H2d, and H2e, partial support for H2a, and no support for H2b.
 
-The trace plots for both threshold specifications (Appendix \ref{sec-mcmc-75}, Appendix \ref{sec-mcmc-90}) show stable and well-mixed Markov chains, indicating successful convergence of the Monte Carlo Maximum Likelihood Estimation (MCMLE) algorithm. The corresponding density plots exhibit unimodal and regular distributions that are centered around stable means, indicating consistent and robust parameter estimation across iterations.
+The trace plots for both threshold specifications (Appendix \ref{sec-mcmc-75}, Appendix
+\ref{sec-mcmc-90}) show stable and well-mixed Markov chains, indicating successful
+convergence of the Monte Carlo Maximum Likelihood Estimation (MCMLE) algorithm. The
+corresponding density plots exhibit unimodal and regular distributions that are centered
+around stable means, indicating consistent and robust parameter estimation across
+iterations.
 
 #### Goodness of Fit
 
 The results of the goodness of fit analysis of Model 1 (threshold 0.75) and Model 2
-(threshold 0.9) are provided in Figure \ref{fig-mod-75} and Figure \ref{fig-mod-90}, indicating that
-both models accurately reproduce the sufficient statistics they condition on: for all
-included terms, the observed statistics fall well inside the boxplots of the simulated
-networks, so the models are internally consistent. However, Model 1 captures the overall network structure more closely than Model 2.
+(threshold 0.9) are provided in Figure \ref{fig-mod-75} and Figure \ref{fig-mod-90},
+indicating that both models accurately reproduce the sufficient statistics they condition
+on: for all included terms, the observed statistics fall well inside the boxplots of the
+simulated networks, so the models are internally consistent. However, Model 1 captures the
+overall network structure more closely than Model 2.
 
-For in-degree and out-degree, Model 1 roughly tracks the observed distributions but still underestimates how many countries have very few partners. This problem is stronger in Model 2, where the real network has more peripheral countries and a few dominant hubs than the simulations reproduce.
+For in-degree and out-degree, Model 1 roughly tracks the observed distributions but still
+underestimates how many countries have very few partners. This problem is stronger in
+Model 2, where the real network has more peripheral countries and a few dominant hubs than
+the simulations reproduce.
 
-Minimum geodesic distance diagnostics show that the observed network has many more very short paths, indicating a more tightly connected structure than either model implies. Edgewise shared partner diagnostics similarly reveal that both models struggle to reproduce the combination of high local clustering and short global distances, with the mismatch again larger for Model 2. This is consistent with using a higher threshold: keeping only the top 10% of trade ties produces an extremely sparse, hub-dominated network, in which only the very strongest ties are kept, making our relatively generic ERGM cannot fully reproduce it, whereas the denser Model 1 network is easier to approximate.
+Minimum geodesic distance diagnostics show that the observed network has many more very
+short paths, indicating a more tightly connected structure than either model implies.
+Edgewise shared partner diagnostics similarly reveal that both models struggle to
+reproduce the combination of high local clustering and short global distances, with the
+mismatch again larger for Model 2. This is consistent with using a higher threshold:
+keeping only the top 10% of trade ties produces an extremely sparse, hub-dominated
+network, in which only the very strongest ties are kept, making our relatively generic
+ERGM cannot fully reproduce it, whereas the denser Model 1 network is easier to
+approximate.
 
 ![The Goodness of Fit in the stimulated networks with threshold 0.75. The minimum geodesic
 distance, in degree, out degree and edge-wise shared partners are
-captured](figures/gof_combined_plot_75.png){#fig-mod-75 fig-pos="H" width=85% fig-align="center"}
+captured](figures/gof_combined_plot_75.png){#fig-mod-75 fig-pos="H" width="85%"
+fig-align="center"}
 
 ![The Goodness of Fit in the stimulated networks with threshold 0.9. The minimum geodesic
 distance, in degree, out degree and edge-wise shared partners are
-captured](figures/gof_combined_plot_90.png){#fig-mod-90 fig-pos="H" width=85% fig-align="center"}
+captured](figures/gof_combined_plot_90.png){#fig-mod-90 fig-pos="H" width="85%"
+fig-align="center"}
 
 ## Conclusion
 
@@ -1002,9 +1038,9 @@ captured](figures/gof_combined_plot_90.png){#fig-mod-90 fig-pos="H" width=85% fi
 ::: {#refs}
 :::
 
-## Appendix 
+## Appendix
 
-### Appendix A: MCMC Diagnostics of ERGM model applying 0.75 threshold  {#sec-mcmc-75}
+### Appendix A: MCMC Diagnostics of ERGM model applying 0.75 threshold {#sec-mcmc-75}
 
 ```{r}
 #| echo: false 
@@ -1019,7 +1055,7 @@ for (i in 1:n) {
 
 {{< pagebreak >}}
 
-### Appendix B: MCMC Diagnostics of ERGM model applying 0.9 threshold  {#sec-mcmc-90}
+### Appendix B: MCMC Diagnostics of ERGM model applying 0.9 threshold {#sec-mcmc-90}
 
 ```{r}
 #| echo: false 

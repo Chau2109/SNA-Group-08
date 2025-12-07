@@ -1,28 +1,26 @@
 % Options for packages loaded elsewhere
-% Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
 ]{article}
-\usepackage{xcolor}
-\usepackage[left=1in,right=1in,top=1.1in,bottom=1.1in,heightrounded]{geometry}
+
 \usepackage{amsmath,amssymb}
-\setcounter{secnumdepth}{5}
+\usepackage{setspace}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math} % this also loads fontspec
+  \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
-\ifPDFTeX\else
-  % xetex/luatex font selection
+\ifPDFTeX\else  
+    % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -30,7 +28,6 @@
   \usepackage[]{microtype}
   \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-\usepackage{setspace}
 \makeatletter
 \@ifundefined{KOMAClassName}{% if non-KOMA class
   \IfFileExists{parskip.sty}{%
@@ -41,6 +38,10 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
+\usepackage{xcolor}
+\usepackage[left=1in,right=1in,top=1.1in,bottom=1.1in,heightrounded]{geometry}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{5}
 % Make \paragraph and \subparagraph free-standing
 \makeatletter
 \ifx\paragraph\undefined\else
@@ -66,7 +67,8 @@
 \makeatother
 
 
-\usepackage{longtable,booktabs,array}
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -91,8 +93,6 @@
 % Set default figure placement to htbp
 \def\fps@figure{htbp}
 \makeatother
-
-
 % definitions for citeproc citations
 \NewDocumentCommand\citeproctext{}{}
 \NewDocumentCommand\citeproc{mm}{%
@@ -126,18 +126,6 @@
 \newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
-
-
-
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-
-
-
- 
-
 
 \usepackage{array}
 \usepackage{pdfpages}
@@ -191,9 +179,11 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
+
 \usepackage{bookmark}
+
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same}
+\urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
   pdftitle={SNA4DS Project - Report Submission 2},
   pdfauthor={Leon Boeren - Noud van Summeren - Chau Nguyen - Paritosh Singh - Silvia Petrova},
@@ -216,6 +206,7 @@
 \author{Leon Boeren - Noud van Summeren - Chau Nguyen - Paritosh Singh -
 Silvia Petrova}
 \date{2025-11-14}
+
 \begin{document}
 \maketitle
 
@@ -236,7 +227,7 @@ Silvia Petrova}
 \setlength{\arrayrulewidth}{0.05pt}
 \begin{longtable}{p{0.28\textwidth} p{0.68\textwidth}}
 \caption{Definitions of Key Terms}
-\label{tab:key-terms-wgi} \\
+ \\
 \hline
 \textbf{Term} & \textbf{Definition} \\
 \hline
@@ -526,7 +517,7 @@ characteristics, shaping the overall architecture of the global trade.
 \setlength{\arrayrulewidth}{0.05pt}
 \begin{longtable}{p{0.27\textwidth} p{0.29\textwidth} p{0.40\textwidth}}
 \caption{Hypotheses, Model Terms, and Theoretical Motivation}
-\label{tab:hypo_summary} \\
+ \\
 \hline
 \textbf{Hypothesis} & \textbf{GERGM Term} & \textbf{Motivation} \\
 \hline
@@ -582,6 +573,7 @@ The \texttt{dgwesp(decay = 0.25, fixed = TRUE, type="OTP")} term captures the te
 \textbf{H2e: Popularity}  
 Countries that already receive high levels of imports from many partners are likely to become attractive trade destinations, making others more likely to export to them
 &
+\texttt{nodeicov("log\_total\_imports")}
 \texttt{nodeicov("log\_total\_imports")}
 &
 The \texttt{nodeicov("log\_total\_imports")} term captures the tendency for countries with high import volumes to attract additional export ties. Large import markets signal strong demand and institutional reliability, lowering perceived risks for new exporters and generating self-reinforcing patterns in which highly connected import destinations continue to receive a disproportionate share of global exports
@@ -1018,62 +1010,69 @@ patterns than alternative approaches.
 \subsection{MRQAP -- Results for Research Question
 1}\label{mrqap-results-for-research-question-1}
 
-We estimate a number of MRQAP models with bilateral trade intensity
-between country pairs as the dependent network in order to address
-Research Question 1. According to our hypotheses, regulatory quality
-similarity (H1a) and corruption control similarity (H2a) are the primary
-predictors that capture similarities in governance characteristics. We
-use inflation dissimilarity and the dyad's mean GDP as controls in every
-specification. We employ MRQAP with 5,000 QAP permutations to obtain
-network-robust p-values because trade relations between dyads are not
-independent.
+We estimate a set of MRQAP models with bilateral trade intensity between
+country pairs as the dependent network to answer Research Question 1. In
+line with recent MRQAP studies on trade in lithium-ion batteries and
+rare earth elements (Hu et al., 2023; Yang et al., 2025), the models are
+specified stepwise. Model 0 only includes the dyadic average of GDP
+(GDP\_mean); Model 1 adds inflation dissimilarity; Model H1a adds
+regulatory quality similarity; and the final Model 1 MRQAP (H1a+H2a)
+adds corruption control similarity. All models generate network-robust
+p-values using 5,000 QAP permutations.
 
-We start with two baseline models that solely take economic covariates
-into account. The GDP dyadic average is included in Model 0. This model
-already explains about half of the variance in bilateral trade intensity
-(R² ≈ 0.50), as Table~\ref{tbl-mrqap-fit} demonstrates. This suggests
-that economic size is a very strong predictor of how intensely countries
-trade. According to the permu, the GDP\_mean coefficient is large,
-positive, and highly significant in all models (about 0.31).
+The baseline results highlight the dominant role of economic size. Model
+0 already explains around half of the variance in bilateral trade
+intensity (R² \textasciitilde{} 0.50), and the GDP\_mean coefficient is
+large, positive, and highly significant (\textasciitilde0.31),
+consistent with gravity-model evidence that higher-GDP countries trade
+more intensively with each other (Leitão, 2024). A small negative
+coefficient on Inflation\_diff with a marginal two-tailed permutation
+p-value (\textasciitilde{} 0.07--0.09) indicates that dyads with more
+similar inflation rates tend to trade slightly more when inflation
+dissimilarity is added in Model 1. However, the overall fit improves
+only modestly: MSE decreases and R² increases slightly, while AIC and
+BIC change little (Table~\ref{tbl-mrqap-fit}).
 
-Model 1 incorporates differences in inflation between pairs of
-countries. Dyads with more similar inflation rates typically engage in
-more intense trading, as indicated by the negative coefficient on
-Inflation\_diff. Its two-tailed permutation p-value, however, is only
-marginally significant (between 0.07 and 0.09), indicating that this
-relationship is not as strong as the GDP effect. The overall fit is
-barely affected by the inclusion of inflation dissimilarity: When
-compared to the GDP-only baseline, R2 rises slightly and mean squared
-error (MSE) falls slightly, but AIC and BIC values only slightly improve
-(Table~\ref{tbl-mrqap-fit}).
+We add regulatory quality similarity (RegQual\_similarity) to Model H1a
+in order to test H1a. The Worldwide Governance Indicators, which report
+scores on a -2.5 to 2.5 scale, are used to measure regulatory quality.
+We standardise these scores to mean zero and unit variance, and we
+define similarity as the negative absolute difference between the
+standardised values. Therefore, more similar regulatory environments
+between two countries are indicated by higher RegQual\_similarity. In
+Model H1a, the coefficient on RegQual\_similarity is positive but close
+to zero and statistically non-significant, while the effects of
+GDP\_mean and Inflation\_diff remain essentially unchanged. Model-fit
+statistics in Table~\ref{tbl-mrqap-fit} show that including regulatory
+quality similarity barely affects R², MSE, AIC, or BIC relative to the
+purely economic specifications.
 
-To test H1a, we next present our first governance similarity metric,
-regulatory quality similarity. Higher values indicate more similar
-regulatory environments because this variable (RegQual\_similarity) is
-calculated as the negative absolute difference between the standardised
-regulatory quality scores of various nations. The strong positive effect
-of GDP\_mean and the weak negative effect of Inflation\_diff are
-essentially unchanged in Model H1a (not shown separately), while the
-coefficient on RegQual\_similarity is positive but very small in
-magnitude and statistically non-significant. In comparison to the purely
-economic baseline, adding regulatory quality similarity hardly affects
-R2, MSE, AIC, or BIC, according to the model fit statistics in
-Table~\ref{tbl-mrqap-fit}.
+Finally, Model 1 MRQAP adds corruption control similarity
+(CorrControl\_similarity), built analogously from the
+control-of-corruption indicator (also ranging from -2.5 to 2.5 and
+standardised before constructing the similarity term). The full
+coefficient set is reported in Table~\ref{tbl-mrqap-coefs}. Both
+RegQual\_similarity and CorrControl\_similarity have relatively large
+two-tailed permutation p-values (\textasciitilde{} 0.11 and 0.10),
+indicating no statistically significant effect at conventional levels.
+RegQual\_similarity is small and positive, while CorrControl\_similarity
+is small and negative. Figure~\ref{fig-mrqap-coefs} visualises these
+results: GDP\_mean clearly dominates, Inflation\_diff shows a modest
+negative association, and both governance similarity terms have bars
+that are effectively indistinguishable from zero. This pattern contrasts
+with earlier gravity-type findings that institutional similarity can
+raise trade volumes (De Groot et al., 2004), suggesting that such
+effects may be weaker once economic size and basic macroeconomic
+conditions are controlled for.
 
-Lastly, the governance similarity metrics RegQual\_similarity and
-CorrControl\_similarity are included in Model 1 MRQAP (Model H1a+H2a in
-Table~\ref{tbl-mrqap-fit}). The complete set of coefficients is reported
-in Table~\ref{tbl-mrqap-coefs}. Once more, the RegQual\_similarity
-estimate is small and positive (\textasciitilde{} 0.013), whereas the
-CorrControl\_similarity estimate is small and negative
-(\textasciitilde{} --0.012). Crucially, after controlling for GDP and
-inflation, both coefficients have comparatively large two-tailed
-permutation p-values (approximately 0.11 and 0.10, respectively),
-suggesting that neither effect is statistically significant at
-conventional levels. On the other hand, Inflation\_diff continues to
-show a slight negative, marginally significant effect, and GDP\_mean
-maintains a strong, highly significant positive association with trade
-intensity.
+When combined, the MRQAP results show no statistically significant
+evidence that similarities in corruption control or regulatory quality,
+as measured here, lead to consistently higher trade intensity between
+nations. Rather, they show that basic economic size and modest
+macroeconomic stability are more important for explaining how strongly
+nations trade in 2018 than governance similarity. The existence of a
+trade relationship may still be influenced by governance; we revisit
+this issue in the GERGM analysis in the following section.
 
 Table~\ref{tbl-mrqap-coefs} summarizes the MRQAP estimates for Model 1,
 focusing on the two governance similarity terms and the controls.
@@ -1099,20 +1098,6 @@ Pr(\textgreater=\textbar b\textbar) \\
 5 & -0.018 & 0.055 & 0.945 & 0.086 \\
 
 \end{longtable}
-
-The estimated coefficients from Model 1 (not including the intercept)
-are shown in Figure Figure~\ref{fig-mrqap-coefs}. With a significantly
-larger positive bar than any other term, the plot emphasises GDP\_mean's
-dominant role. A weaker effect is indicated by the Inflation\_diff bar,
-which is negative and noticeably smaller. The absolute value of the bars
-for RegQual\_similarity and CorrControl\_similarity is nearly zero,
-which graphically supports their lack of a significant and statistical
-influence on trade intensity.
-
-To assess overall model performance more systematically, we compare mean
-squared error (MSE), R², AIC and BIC across the four specifications
-(baseline with GDP only, baseline plus inflation, H1a, and H1a+H2a).
-Table~\ref{tbl-mrqap-fit} shows these metrics.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.5224}}
@@ -1150,20 +1135,9 @@ H1a+H2a: +Corr. control similarity & 0.045 & 0.502 & -91304.44 &
 
 \end{longtable}
 
-The model comparison in Table~\ref{tbl-mrqap-fit} demonstrates that, in
-addition to the economic controls, governance similarity adds minimal
-explanatory power. When switching from the baseline models to the
-governance-augmented models, improvements in MSE, AIC, and BIC are
-minimal, and R2 stays near 0.50 for all four specifications. This
-implies that rather than similarity in the two governance dimensions
-taken into consideration, economic size (and to a lesser extent,
-inflation differences) accounts for the majority of the explainable
-variation in bilateral trade intensity in our data.
-
-To visualize the contributions of the different predictors in Model 1,
-Figure Figure~\ref{fig-mrqap-coefs} plots the estimated coefficients
-(excluding the intercept). This highlights the relative magnitude and
-direction of the effects.
+Figure~\ref{fig-mrqap-coefs} plots the estimated coefficients (excluding
+the intercept). This highlights the relative magnitude and direction of
+the effects.
 
 \begin{figure}
 
@@ -1178,28 +1152,6 @@ direction of the effects.
 
 \end{figure}%
 
-The estimated coefficients from Model 1 (not including the intercept)
-are shown in Figure Figure~\ref{fig-mrqap-coefs}. With a significantly
-larger positive bar than any other term, the plot emphasises GDP\_mean's
-dominant role. A weaker effect is indicated by the Inflation\_diff bar,
-which is negative and noticeably smaller. The absolute value of the bars
-for RegQual\_similarity and CorrControl\_similarity is nearly zero,
-which graphically supports their lack of a significant and statistical
-influence on trade intensity.
-
-When combined, these MRQAP findings only partially support Research
-Question 1. Economic fundamentals clearly influence the intensity of
-bilateral trade: country pairs with higher combined GDP trade
-significantly more, and there is some evidence that stronger trade ties
-are linked to macroeconomic similarity (lower inflation differences).
-However, once these economic factors are considered, we find no evidence
-that similarities in regulatory quality or corruption control, as
-measured here, result in systematically higher trade intensity. As a
-result, the MRQAP analysis does not support either H1a or H2a. The
-primary drivers of variation in bilateral trade intensity in this
-network seem to be basic economic capacity and modest macroeconomic
-stability rather than governance similarity.
-
 \subsection{ERGM -- Result for Research Question
 2}\label{ergm-result-for-research-question-2}
 
@@ -1208,7 +1160,7 @@ ERGM terms, which are defined in Table \ref{tbl_terms_testing}.
 
 \begin{longtable}{p{10cm} p{4cm}}
 \caption{ERGM Terms and Testing Overview}
-\label{tbl_terms_testing} \\
+ \\
 \toprule
 \textbf{ERGM Terms} & \textbf{Testing} \\
 \midrule
@@ -1284,7 +1236,7 @@ for H2e.
 
 \begin{longtable}{p{4.5cm}| *{3}{>{\centering\arraybackslash}p{1.6cm}} | *{3}{>{\centering\arraybackslash}p{1.6cm}}}
 \caption{Comparison of ERGM Results for Trade Networks (Thresholds 75\% and 90\%)} 
-\label{tbl_ergm_comparison} \\
+ \\
 \hline
 \multicolumn{1}{p{4.5cm}|}{Term} &
 \multicolumn{3}{c|}{Model Threshold 0.75} &
