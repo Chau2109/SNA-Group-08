@@ -883,6 +883,9 @@ economic capacity and modest macroeconomic stability rather than governance simi
 
 ### ERGM – Result for Research Question 2
 
+To address our hypothesis, we constructed the final model using a set of ERGM terms, which
+are defined in Table @tbl:terms_testing.
+
 \begin{longtable}{p{10cm} p{4cm}}
 \caption{ERGM Terms and Testing Overview}
 \label{tbl:terms_testing} \\
@@ -909,16 +912,17 @@ dgwdsp(decay = 0.025, fixed =TRUE, type="OTP") & Control variable \\
 
 \end{longtable}
 
-We estimated two ERGM specifications on the 2018 export network, using different
-binarisation thresholds for what counts as a “strong” trade tie (top 25% vs. top 10% of
-trade values) (Table @tbl:ergm_comparison). Based on standard fit criteria (AIC, BIC),
-Model 2 (threshold 0.9) fits clearly better than Model 1 (threshold 0.75). This indicates
-that the very strongest export relationships are more systematically structured: once we
-account for reciprocity, clustering, popularity and country characteristics, these
-top-tier ties are highly predictable. When we relax the threshold in Model 1 and include
-many more medium-intensity exports, the pattern becomes noisier and harder to explain with
-the same set of mechanisms. Substantively, this suggests that the most intense export ties
-follow clearer network and trading rules than the broader set of moderate trade links.
+Comparing the results of the two model specifications (Table @tbl:ergm_comparison) based
+on alternative binarisation thresholds (top 10% vs. top 25% of trade values) for defining
+a “strong” trade tie in the 2018 export network reveals notable differences in model
+performance. Based on standard fit criteria (AIC, BIC), Model 2 (threshold 0.9) fits
+clearly better than Model 1 (threshold 0.75). This indicates that the very strongest
+export relationships are more systematically structured: once we account for reciprocity,
+clustering, popularity and country characteristics, these top-tier ties are highly
+predictable. When we relax the threshold in Model 1 and include many more medium-intensity
+exports, the pattern becomes noisier and harder to explain with the same set of
+mechanisms. Substantively, this suggests that the most intense export ties follow clearer
+network and trading rules than the broader set of moderate trade links.
 
 From the non-structural perspective, both models shows a consistent message. Countries
 with higher overall import volume are much more likely to be the recipients of strong
