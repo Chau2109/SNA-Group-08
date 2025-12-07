@@ -2,4 +2,9 @@ project:
   output-dir: _output
   execute-dir: project
 
-
+format:
+  pdf:
+    keep-tex: true # <--- Add this line
+    include-in-header:
+      text: |
+        \usepackage{array}

@@ -25,6 +25,8 @@ include-in-header:
       \usepackage{array}
       \usepackage{longtable}  
       \setlength{\parskip}{1.2em}
+      \usepackage{tabularx}
+      
       
 bibliography: SNA project.bib
 csl: apa-6th-edition.csl
@@ -343,7 +345,7 @@ architecture of the global trade.
 \hline
 \endlastfoot
 
-\textbf{H1b: Regulatory Quality Similarity}  
+\textbf{H2a: Regulatory Quality Similarity}  
 Countries with more similar levels of regulatory quality are expected to engage in higher-value bilateral trade
 &
 \texttt{absdiff(regulatory\_quality)}
@@ -361,7 +363,7 @@ The \texttt{absdiff(rule\_of\_law)} term captures how similar institutions reduc
 \\
 \hline
 
-\textbf{H3b: Reciprocity}  
+\textbf{H2c: Reciprocity}  
 Bilateral export relationships are expected to display reciprocity, such that higher export volumes from one country to its trading partner are associated with higher export volumes received in return from that partner
 &
 \texttt{mutual}
@@ -370,7 +372,7 @@ The \texttt{mutual} term captures the tendency for bilateral trade relationships
 \\
 \hline
 
-\textbf{H4b: Transitivity}  
+\textbf{H2d: Transitivity}  
 Trade relationships exhibit transitivity, where countries are more likely to trade intensively with partners of their existing trading partners, resulting in clustered patterns of export ties
 &
 \texttt{dgwesp(decay = 0.25, fixed = TRUE, type="OTP")}
@@ -379,12 +381,12 @@ The \texttt{dgwesp(decay = 0.25, fixed = TRUE, type="OTP")} term captures the te
 \\
 \hline
 
-\textbf{H5b: Popularity}  
+\textbf{H2e: Popularity}  
 Countries that already receive high levels of imports from many partners are likely to become attractive trade destinations, making others more likely to export to them
 &
-\texttt{nodeicov("log_total_imports")}
+\texttt{nodeicov("log\_total\_imports")}
 &
-The \texttt{nodeicov("log_total_imports")} term captures the tendency for countries with high import volumes to attract additional export ties. Large import markets signal strong demand and institutional reliability, lowering perceived risks for new exporters and generating self-reinforcing patterns in which highly connected import destinations continue to receive a disproportionate share of global exports
+The \texttt{nodeicov("log\_total\_imports")} term captures the tendency for countries with high import volumes to attract additional export ties. Large import markets signal strong demand and institutional reliability, lowering perceived risks for new exporters and generating self-reinforcing patterns in which highly connected import destinations continue to receive a disproportionate share of global exports
 \\
 \hline
 
@@ -682,9 +684,9 @@ clustering. Together, these methods provide a theoretically coherent framework t
 integrates network dynamics and governance effects, offering a more complete and precise
 analysis of international trade patterns than alternative approaches.
 
-## Results (1300 words)
+## Results
 
-### MRQAP – Results for Model 1
+### MRQAP – Results for Research Question 1
 
 We estimate a number of MRQAP models with bilateral trade intensity between country pairs
 as the dependent network in order to address Research Question 1. According to our
@@ -879,12 +881,160 @@ intensity. As a result, the MRQAP analysis does not support either H1a or H2a. T
 drivers of variation in bilateral trade intensity in this network seem to be basic
 economic capacity and modest macroeconomic stability rather than governance similarity.
 
-### ERGM – 2.5 POINTS - Chau + Leon
+### ERGM – Result for Research Question 2
 
-Present your results appropriately (plots, tables…) and discuss your findings in plain
-English Discuss the meaning of your findings in relation to your hypothesis.
+\begin{longtable}{p{10cm} p{4cm}}
+\caption{ERGM Terms and Testing Overview}
+\label{tbl:terms_testing} \\
+\toprule
+\textbf{ERGM Terms} & \textbf{Testing} \\
+\midrule
+\endhead
 
-## Conclusion (1000 words)
+\midrule
+\multicolumn{2}{r}{\footnotesize\emph{Continued on next page}} \\
+\endfoot
+
+\bottomrule
+\endlastfoot
+
+absdiff("regulatory\_quality") & Hypothesis H2a \\
+absdiff("rule\_of\_law")  & Hypothesis H2b \\
+mutual & Hypothesis H2c \\
+dgwesp(decay = 0.025, fixed =TRUE, type="OTP") & Hypothesis H2d \\
+nodeicov("log\_total\_imports") & Hypothesis H2e \\
+gwidegree(0.025, fixed = TRUE) & Control variable \\
+nodecov("gdp\_growth") & Control variable \\
+dgwdsp(decay = 0.025, fixed =TRUE, type="OTP") & Control variable \\
+
+\end{longtable}
+
+We estimated two ERGM specifications on the 2018 export network, using different
+binarisation thresholds for what counts as a “strong” trade tie (top 25% vs. top 10% of
+trade values) (Table X). Based on standard fit criteria (AIC, BIC), Model 2 (threshold
+0.9) fits clearly better than Model 1 (threshold 0.75). This indicates that the very
+strongest export relationships are more systematically structured: once we account for
+reciprocity, clustering, popularity and country characteristics, these top-tier ties are
+highly predictable. When we relax the threshold in Model 1 and include many more
+medium-intensity exports, the pattern becomes noisier and harder to explain with the same
+set of mechanisms. Substantively, this suggests that the most intense export ties follow
+clearer network and trading rules than the broader set of moderate trade links.
+
+From the non-structural perspective, both models shows a consistent message. Countries
+with higher overall import volume are much more likely to be the recipients of strong
+export ties in both models, and this effect is large and highly significant, with an even
+stronger coefficient in Model 2. This directly supports H2e: large import markets act as
+an attractive hub in the trade network, attracting a disproportionate share of strong
+export relationships. We also find that similarity in regulatory quality is associated
+with a slightly higher probability of a strong export tie, supporting H2a, although the
+magnitude is modest compared to the import-volume and structural effects. By contrast,
+similarity in rule-of-law conditions does not show a clear pattern in either model, so we
+do not find support for H2b in this static 2018 snapshot. Finally, higher GDP growth of
+exporters is associated with a very small reduction in their likelihood of sending strong
+ties. This effect is statistically significant but substantively minor relative to import
+volume and the structural terms.
+
+The structural terms are very stable across Model 1 and Model 2 and strongly support
+H2c–H2e. First, reciprocity is extremely strong: export relationships are much more likely
+to be mutual, which supports H2c and is consistent with the idea that strong trade ties
+typically reflect mutual economic dependence and negotiated agreements rather than purely
+one-sided flows. Second, we find clear evidence of clustering and triadic closure,
+captured by the positive dgwesp(type = "OTP") term: countries that share trading partners
+are far more likely to trade strongly with each other. This is the mechanism behind H2d
+and aligns with the existence of regional blocs or tightly knit trade clusters, where
+“partners of my partners” tend to become my partners as well. Third, the popularity term
+(gwidegree) is positive in both models, indicating that countries already receiving many
+export ties are highly likely to attract additional exporters. This reinforces hub-like
+structures in the network and, combined with the strong effect of being a large importer,
+provides further support for H2e.
+
+Compared with the earlier MRQAP analysis, the ERGM results provide a coherent and more
+nuanced picture. MRQAP indicated that economic fundamentals, especially market size,
+explain most of the variation in trade intensity, while governance similarity plays at
+best a secondary role. The ERGM confirms this and adds that network structure
+itself—reciprocity, clustering among partners, and the prominence of import hubs—is
+central to understanding who trades intensely with whom. There is clear structural
+dependence: strong reciprocity, very strong transitivity, and a highly skewed distribution
+of import “popularity”. A positive coefficient for dgwesp(type = "OTP") implies that trade
+clustering arises because countries tend to form direct trade links with the destinations
+of their existing trading partners. These structural findings match the known shape of the
+global trade network. Taken together, the 2018 export network appears as a highly
+reciprocal, clustered, hub-dominated system in which very large import markets and
+patterns of interdependence matter much more than fine differences in institutional
+quality. In this static view we therefore find strong support for H2c, H2d, and H2e,
+partial support for H2a, and no support for H2b.
+
+::: {data-quarto-disable-processing="true"}
+```{=latex}
+\begin{longtable}{p{4.5cm}| *{3}{>{\centering\arraybackslash}p{1.6cm}} | *{3}{>{\centering\arraybackslash}p{1.6cm}}}
+\caption{Comparison of ERGM Results for Trade Networks (Thresholds 75\% and 90\%)} 
+\label{tbl:ergm_comparison} \\
+\hline
+\multicolumn{1}{p{4.5cm}|}{Term} &
+\multicolumn{3}{c|}{Model Threshold 0.75} &
+\multicolumn{3}{c}{Model Threshold 0.90} \\
+\cline{2-4} \cline{5-7}
+& Estimate & Std. Error & \multicolumn{1}{c|}{Signif.} & Estimate & Std. Error & Signif. \\
+\hline
+\endhead
+%
+\hline
+\multicolumn{7}{r}{\footnotesize\emph{Continued on next page}} \\
+\endfoot
+%
+\hline
+\multicolumn{7}{p{\linewidth}}{\footnotesize\emph{Note}: GW = geometrically weighted; OTP = outgoing two-paths; Signif. codes: p < 0.001 '***', p < 0.01 '**', p < 0.05 '*', p < 0.1 '.'} \\
+\endlastfoot
+%
+Edges                          & -13.863 & 0.360 & *** & -15.646 & 0.418 & *** \\
+Regulatory Quality (absdiff)  & -0.112 & 0.032 & *** & -0.210 & 0.044 & *** \\
+Rule of Law (absdiff)         & 0.024  & 0.032 &     & -0.009 & 0.043 &     \\
+Log Total Imports (nodeicov)   & 0.438  & 0.010 & *** & 0.554  & 0.018 & *** \\
+GDP Growth                     & -0.011 & 0.004 & **  & -0.015 & 0.005 & **  \\
+Mutual                         & 3.139  & 0.050 & *** & 3.609  & 0.077 & *** \\
+Import popularity (gwideg)  & 3.839  & 0.313 & *** & 2.883  & 0.278 & *** \\
+Transitivity effect (dgwesp.OTP) & 4.003  & 0.280 & *** & 3.286  & 0.202 & *** \\
+Dyadwise shared partners (gwdsp.OTP)        & -0.108 & 0.003 & *** & -0.081 & 0.004 & *** \\
+\hline
+\textbf{AIC} & \multicolumn{3}{c|}{16117} & \multicolumn{3}{c}{8930} \\
+\textbf{BIC} & \multicolumn{3}{c|}{16193} & \multicolumn{3}{c}{9005} \\
+\end{longtable}
+```
+:::
+
+### Goodness of Fit
+
+Both Model 1 (threshold 0.75) and Model 2 (threshold 0.9) reproduce the sufficient
+statistics they condition on: for all included terms, the observed statistics fall well
+inside the boxplots of the simulated networks, so the models are internally consistent.
+However, Model 1 matches the overall network structure more closely than Model 2. For
+in-degree and out-degree, Model 1 roughly follows the observed degree distributions,
+although it still underestimates how many countries have very few partners. This issue is
+clearer in the sparser Model 2, where the empirical network exhibits greater degree
+heterogeneity (more isolated nodes and a few highly dominant hubs) than the simulations
+can capture.
+
+Furthermore, diagnostics for minimum geodesic distance reveal that the observed network
+possesses much higher frequency of short path lengths between dyads than either model
+implies, suggesting the actual trade network is more highly connected than the models
+suggest. Similarly, edgewise shared partners diagnostics indicate that both models
+struggle to reproduce the combination of high local clustering and very short global path
+lengths, and both underestimate low-degree nodes. The mismatch is more pronounced in Model
+2. This is consistent with the fact that raising the threshold to the top 10% of trade
+values makes the observed network extremely sparse and concentrated around a few hubs.
+Keeping only the very strongest ties yields a network that is so hub-and-clustered that
+our relatively generic ERGM cannot fully reproduce it, whereas the denser Model 1 network
+is easier to approximate.
+
+![The Goodness of Fit in the stimulated networks with threshold 0.75. The minimum geodesic
+distance, in degree, out degree and edge-wise shared partners are
+captured](figures/gof_combined_plot_75.png){#fig-mod-75 fig-pos="H"}
+
+![The Goodness of Fit in the stimulated networks with threshold 0.9. The minimum geodesic
+distance, in degree, out degree and edge-wise shared partners are
+captured](figures/gof_combined_plot_90.png){#fig-mod-90 fig-pos="H"}
+
+## Conclusion
 
 -   What were your topic and research questions again? 1 sentence only
 

@@ -121,11 +121,6 @@ boxplot(
 ```
 
 ```{r threshold}
-#This huge gap tells you:
-
-# Most trade values are relatively small (around a few thousand),
-
-# But a few very large trade relationships push the mean way up.
 # Choose 3rd Quartile as threshold
 threshold_75 <- quantile(edge_list$weight_millions, 0.75, na.rm = TRUE)
 
@@ -141,7 +136,6 @@ density_q3  <- edges_q3  / possible_dyads
 density_q3
 
 ```
-
 
 
 
@@ -207,7 +201,6 @@ print(trade_matrix)
 
 
 ```{r}
-# Next step is building a Data Frame of Node Covariates
 # Countries in your matrix (must be the same as row/col names)
 countries <- rownames(trade_matrix)
 
@@ -400,10 +393,9 @@ ergm::mcmc.diagnostics(mod7)
 ```
 
 
-
 ```{r}
-#fit.mod7 <- ergm::gof(mod7)
-#snafun::stat_plot_gof(fit.mod7)
+fit.mod7 <- ergm::gof(mod7)
+snafun::stat_plot_gof(fit.mod7)
 ```
 
 ```{r Testing another ERGM models}
@@ -429,16 +421,5 @@ ergm::mcmc.diagnostics(mod8)
 
 fit.mod8 <- ergm::gof(mod8)
 plot(fit.mod8)
-```
-
-```{r}
-# Select this and click RUn All Chunk above
-# save the model
-saveRDS(mod8, "mod_final_75.rds")
-#save GOF
-
-# save GOF object
-saveRDS(fit.mod8, "gof_mod_final_75.rds")
-save.image(file = "my_workspace_75.RData")
 ```
 

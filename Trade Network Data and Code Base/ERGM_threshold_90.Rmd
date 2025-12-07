@@ -81,6 +81,7 @@ wb_combined <- wb_combined[country_code %in% trade_countries]
 dim(wb_combined)
 
 ```
+
 ```{r building_edges}
 # Edge list with numeric weights is Export Value between 2 countries measured in 1000 USD
 edge_list <- data.table::data.table(
@@ -118,12 +119,8 @@ hist(
 ```
 
 ```{r threshold}
-#This huge gap tells you:
-
-# Most trade values are relatively small (around a few thousand),
-
-# But a few very large trade relationships push the mean way up.
-# Choose 3rd Quartile as threshold
+#This huge gap mean most trade values are relatively small (around a few thousand), but a few very large trade relationships push the mean way up.
+# Choose top 90% and cut below this threshold
 
 threshold_90 <- quantile(edge_list$weight_millions, 0.9, na.rm = TRUE)
 edge_list[, tie   := as.integer(weight_millions > threshold_90)]
@@ -132,13 +129,11 @@ print(edge_list)
 # Quick density check for the selected threshold
 nodes <- length(unique(c(edge_list$from, edge_list$to)))
 possible_dyads <- nodes * (nodes - 1)
-edges_q3  <- sum(edge_list$tie)
-density_q3  <- edges_q3  / possible_dyads
-density_q3
+edges_90  <- sum(edge_list$tie)
+density_90  <- edges_90  / possible_dyads
+density_90
 
 ```
-
-
 
 
 ```{r building_vertices}
@@ -167,7 +162,6 @@ print(edge_list)
 ```
 
 
-
 ```{r}
 # Countries in edges
 edge_countries <- unique(c(edge_list$from, edge_list$to))
@@ -180,6 +174,7 @@ countries <- sort(intersect(edge_countries, vertex_countries))
 
 length(countries)  # just to see how many
 ```
+
 ```{r adjacency_matrix}
 # Initialize matrix with zeros
 trade_matrix <- matrix(
@@ -219,20 +214,6 @@ stopifnot(identical(countries, analysis_vertices$name))
 ```
 
 ```{r}
-# Categorize governance measures into five ordered groups, because they all have value from -2.5-> 2.5. So / to 5 intervals and set 5 categories
-# Governance categories: 5 ordered groups from -2.5 to 2.5
-#category_breaks <- seq(-2.5, 2.5, length.out = 6)
-
-#categorize_attribute <- function(x) {
-  #cut(
-    #x,
-    #breaks         = category_breaks,
-    #labels         = 1:5,
-    #include.lowest = TRUE,
-    #right          = TRUE
-  #)
-#}
-
 # Scale border time and cost using analysis_vertices
 log_border_time  <- log1p(analysis_vertices$export_border_time_hrs)
 log_border_cost  <- log1p(analysis_vertices$export_border_cost_usd)
@@ -250,12 +231,6 @@ covariate_data <- data.frame(
 
 print(covariate_data)
 str(covariate_data)
-
-
-# Quick checks to avoid infinite errors later
-#stopifnot(identical(rownames(trade_matrix), rownames(covariate_data)))
-#stopifnot(!any(!is.finite(as.matrix(covariate_data[, num_cols, drop = FALSE]))))
-#stopifnot(!any(!is.finite(trade_matrix)))
 
 # Replace NA → 0.0 in numeric covariates
 num_cols <- sapply(covariate_data, is.numeric)
@@ -275,6 +250,7 @@ stopifnot(!any(!is.finite(as.matrix(covariate_data[, num_cols, drop = FALSE]))))
 stopifnot(!any(!is.finite(trade_matrix)))
 
 ```
+
 ```{r Creating_trade_network}
 # Create a network from trade_matrix
 
@@ -425,28 +401,6 @@ ergm::mcmc.diagnostics(mod1)
 
 fit.mod1 <- ergm::gof(mod1)
 snafun::stat_plot_gof(fit.mod1)
-
-```
-
-
-```{r Save the model and GOF plot}
-saveRDS(mod1, file = "mod_ergm_90.rds")
-saveRDS(fit.mod1, file = "mod_ergm_90_gof.rds")
-
-while (!is.null(dev.list())) dev.off()
-
-png("mcmc_diagnostics_mod_90.png",
-    width = 1600, height = 1200, res = 200)
-ergm::mcmc.diagnostics(mod1)
-dev.off()
-
-
-library(ggplot2)
-
-# Or PNG version
-png("gof_mod_90.png", width = 1600, height = 1000, res = 200)
-snafun::stat_plot_gof(fit.mod1)
-dev.off()
 
 ```
 
