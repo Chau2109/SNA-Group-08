@@ -4,7 +4,8 @@ project:
 
 format:
   pdf:
-    keep-tex: true # <--- Add this line
+    keep-tex: true
     include-in-header:
       text: |
         \usepackage{array}
+        \usepackage{pdfpages}  
