@@ -1012,7 +1012,7 @@ Estimation (MCMLE) algorithm. The corresponding density plots exhibit unimodal,
 bell-curved, regular distributions that are centered around stable means, indicating
 consistent and robust parameter estimation across iterations.
 
-### Goodness of Fit
+#### Goodness of Fit
 
 The results of the goodness of fit analysis of Model 1 (threshold 0.75) and Model 2
 (threshold 0.9) are provided in Figure @gof_mod_75 and Figure @gof_mod_90, indicating that
