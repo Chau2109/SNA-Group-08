@@ -1202,11 +1202,11 @@ stability rather than governance similarity.
 2}\label{ergm-result-for-research-question-2}
 
 To address our hypothesis, we constructed the final model using a set of
-ERGM terms, which are defined in Table (\textbf{tbl:terms\_testing?}).
+ERGM terms, which are defined in Table (\textbf{tbl\_terms\_testing?}).
 
 \begin{longtable}{p{10cm} p{4cm}}
 \caption{ERGM Terms and Testing Overview}
-\label{tbl:terms_testing} \\
+\label{tbl_terms_testing} \\
 \toprule
 \textbf{ERGM Terms} & \textbf{Testing} \\
 \midrule
@@ -1230,10 +1230,11 @@ dgwdsp(decay = 0.025, fixed =TRUE, type="OTP") & Control variable \\
 
 \end{longtable}
 
-We estimated two ERGM specifications on the 2018 export network, using
-different binarisation thresholds for what counts as a ``strong'' trade
-tie (top 25\% vs.~top 10\% of trade values) (Table
-(\textbf{tbl:ergm\_comparison?})). Based on standard fit criteria (AIC,
+Comparing the results of the two model specifications (Table
+(\textbf{tbl:ergm\_comparison?})) based on alternative binarisation
+thresholds (top 10\% vs.~top 25\% of trade values) for defining a
+``strong'' trade tie in the 2018 export network reveals notable
+differences in model performance. Based on standard fit criteria (AIC,
 BIC), Model 2 (threshold 0.9) fits clearly better than Model 1
 (threshold 0.75). This indicates that the very strongest export
 relationships are more systematically structured: once we account for

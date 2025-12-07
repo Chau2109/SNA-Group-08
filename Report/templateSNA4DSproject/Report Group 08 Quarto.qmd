@@ -884,11 +884,11 @@ economic capacity and modest macroeconomic stability rather than governance simi
 ### ERGM – Result for Research Question 2
 
 To address our hypothesis, we constructed the final model using a set of ERGM terms, which
-are defined in Table @tbl:terms_testing.
+are defined in Table @tbl_terms_testing.
 
 \begin{longtable}{p{10cm} p{4cm}}
 \caption{ERGM Terms and Testing Overview}
-\label{tbl:terms_testing} \\
+\label{tbl_terms_testing} \\
 \toprule
 \textbf{ERGM Terms} & \textbf{Testing} \\
 \midrule
@@ -912,7 +912,7 @@ dgwdsp(decay = 0.025, fixed =TRUE, type="OTP") & Control variable \\
 
 \end{longtable}
 
-Comparing the results of the two model specifications (Table @tbl:ergm_comparison) based
+Comparing the results of the two model specifications (Table @tbl_ergm_comparison) based
 on alternative binarisation thresholds (top 10% vs. top 25% of trade values) for defining
 a “strong” trade tie in the 2018 export network reveals notable differences in model
 performance. Based on standard fit criteria (AIC, BIC), Model 2 (threshold 0.9) fits
@@ -972,7 +972,7 @@ partial support for H2a, and no support for H2b.
 ```{=latex}
 \begin{longtable}{p{4.5cm}| *{3}{>{\centering\arraybackslash}p{1.6cm}} | *{3}{>{\centering\arraybackslash}p{1.6cm}}}
 \caption{Comparison of ERGM Results for Trade Networks (Thresholds 75\% and 90\%)} 
-\label{tbl:ergm_comparison} \\
+\label{tbl_ergm_comparison} \\
 \hline
 \multicolumn{1}{p{4.5cm}|}{Term} &
 \multicolumn{3}{c|}{Model Threshold 0.75} &
