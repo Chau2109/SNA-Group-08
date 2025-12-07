@@ -911,14 +911,14 @@ dgwdsp(decay = 0.025, fixed =TRUE, type="OTP") & Control variable \\
 
 We estimated two ERGM specifications on the 2018 export network, using different
 binarisation thresholds for what counts as a “strong” trade tie (top 25% vs. top 10% of
-trade values) (Table X). Based on standard fit criteria (AIC, BIC), Model 2 (threshold
-0.9) fits clearly better than Model 1 (threshold 0.75). This indicates that the very
-strongest export relationships are more systematically structured: once we account for
-reciprocity, clustering, popularity and country characteristics, these top-tier ties are
-highly predictable. When we relax the threshold in Model 1 and include many more
-medium-intensity exports, the pattern becomes noisier and harder to explain with the same
-set of mechanisms. Substantively, this suggests that the most intense export ties follow
-clearer network and trading rules than the broader set of moderate trade links.
+trade values) (Table @tbl:ergm_comparison). Based on standard fit criteria (AIC, BIC),
+Model 2 (threshold 0.9) fits clearly better than Model 1 (threshold 0.75). This indicates
+that the very strongest export relationships are more systematically structured: once we
+account for reciprocity, clustering, popularity and country characteristics, these
+top-tier ties are highly predictable. When we relax the threshold in Model 1 and include
+many more medium-intensity exports, the pattern becomes noisier and harder to explain with
+the same set of mechanisms. Substantively, this suggests that the most intense export ties
+follow clearer network and trading rules than the broader set of moderate trade links.
 
 From the non-structural perspective, both models shows a consistent message. Countries
 with higher overall import volume are much more likely to be the recipients of strong
@@ -1002,20 +1002,24 @@ Dyadwise shared partners (gwdsp.OTP)        & -0.108 & 0.003 & *** & -0.081 & 0.
 ```
 :::
 
-The trace plots for all model terms with two threshold demonstrate stable and well-mixed Markov chains, suggesting successful convergence of the Monte Carlo Maximum Likelihood Estimation (MCMLE) algorithm. The corresponding density plots exhibit unimodal, bell-curved, regular distributions that are centered around stable means, indicating consistent and robust parameter estimation across iterations.
-
+The trace plots for all model terms with two threshold demonstrate stable and well-mixed
+Markov chains, suggesting successful convergence of the Monte Carlo Maximum Likelihood
+Estimation (MCMLE) algorithm. The corresponding density plots exhibit unimodal,
+bell-curved, regular distributions that are centered around stable means, indicating
+consistent and robust parameter estimation across iterations.
 
 ### Goodness of Fit
 
-Both Model 1 (threshold 0.75) and Model 2 (threshold 0.9) reproduce the sufficient
-statistics they condition on: for all included terms, the observed statistics fall well
-inside the boxplots of the simulated networks, so the models are internally consistent.
-However, Model 1 matches the overall network structure more closely than Model 2. For
-in-degree and out-degree, Model 1 roughly follows the observed degree distributions,
-although it still underestimates how many countries have very few partners. This issue is
-clearer in the sparser Model 2, where the empirical network exhibits greater degree
-heterogeneity (more isolated nodes and a few highly dominant hubs) than the simulations
-can capture.
+The results of the goodness of fit analysis of Model 1 (threshold 0.75) and Model 2
+(threshold 0.9) are provided in Figure @gof_mod_75 and Figure @gof_mod_90, indicating that
+both models accurately reproduce the sufficient statistics they condition on: for all
+included terms, the observed statistics fall well inside the boxplots of the simulated
+networks, so the models are internally consistent. However, Model 1 matches the overall
+network structure more closely than Model 2. For in-degree and out-degree, Model 1 roughly
+follows the observed degree distributions, although it still underestimates how many
+countries have very few partners. This issue is clearer in the sparser Model 2, where the
+empirical network exhibits greater degree heterogeneity (more isolated nodes and a few
+highly dominant hubs) than the simulations can capture.
 
 Furthermore, diagnostics for minimum geodesic distance reveal that the observed network
 possesses much higher frequency of short path lengths between dyads than either model
