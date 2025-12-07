@@ -1002,6 +1002,9 @@ Dyadwise shared partners (gwdsp.OTP)        & -0.108 & 0.003 & *** & -0.081 & 0.
 ```
 :::
 
+The trace plots for all model terms with two threshold demonstrate stable and well-mixed Markov chains, suggesting successful convergence of the Monte Carlo Maximum Likelihood Estimation (MCMLE) algorithm. The corresponding density plots exhibit unimodal, bell-curved, regular distributions that are centered around stable means, indicating consistent and robust parameter estimation across iterations.
+
+
 ### Goodness of Fit
 
 Both Model 1 (threshold 0.75) and Model 2 (threshold 0.9) reproduce the sufficient
