@@ -1,26 +1,28 @@
 % Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
 ]{article}
-
+\usepackage{xcolor}
+\usepackage[left=1in,right=1in,top=1.1in,bottom=1.1in,heightrounded]{geometry}
 \usepackage{amsmath,amssymb}
-\usepackage{setspace}
+\setcounter{secnumdepth}{5}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
-\ifPDFTeX\else  
-    % xetex/luatex font selection
+\ifPDFTeX\else
+  % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -28,6 +30,7 @@
   \usepackage[]{microtype}
   \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
+\usepackage{setspace}
 \makeatletter
 \@ifundefined{KOMAClassName}{% if non-KOMA class
   \IfFileExists{parskip.sty}{%
@@ -38,10 +41,6 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
-\usepackage{xcolor}
-\usepackage[left=1in,right=1in,top=1.1in,bottom=1.1in,heightrounded]{geometry}
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-\setcounter{secnumdepth}{5}
 % Make \paragraph and \subparagraph free-standing
 \makeatletter
 \ifx\paragraph\undefined\else
@@ -67,8 +66,7 @@
 \makeatother
 
 
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -93,6 +91,8 @@
 % Set default figure placement to htbp
 \def\fps@figure{htbp}
 \makeatother
+
+
 % definitions for citeproc citations
 \NewDocumentCommand\citeproctext{}{}
 \NewDocumentCommand\citeproc{mm}{%
@@ -126,6 +126,18 @@
 \newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
 
 \usepackage{array}
 \usepackage{pdfpages}
@@ -179,11 +191,9 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-
 \usepackage{bookmark}
-
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
+\urlstyle{same}
 \hypersetup{
   pdftitle={SNA4DS Project - Report Submission 2},
   pdfauthor={Leon Boeren - Noud van Summeren - Chau Nguyen - Paritosh Singh - Silvia Petrova},
@@ -206,7 +216,6 @@
 \author{Leon Boeren - Noud van Summeren - Chau Nguyen - Paritosh Singh -
 Silvia Petrova}
 \date{2025-11-14}
-
 \begin{document}
 \maketitle
 
@@ -227,7 +236,7 @@ Silvia Petrova}
 \setlength{\arrayrulewidth}{0.05pt}
 \begin{longtable}{p{0.28\textwidth} p{0.68\textwidth}}
 \caption{Definitions of Key Terms}
- \\
+\label{tab:key-terms-wgi} \\
 \hline
 \textbf{Term} & \textbf{Definition} \\
 \hline
@@ -336,9 +345,6 @@ Sub-Saharan African trade with China: stronger governance enhances
 Chinese exports to Africa, whereas weaker governance, particularly
 higher corruption, can facilitate African exports to China.
 
-\subsection{Complication: The Network Structure
-Problem}\label{complication-the-network-structure-problem}
-
 Despite this evidence, most studies rely on gravity models that assume
 independence across trade pairs and overlook interdependencies in the
 global trade network, such as reciprocity, clustering, and transitivity.
@@ -346,7 +352,7 @@ To address this, recent research has adopted Exponential Random Graph
 Models (ERGMs), which explicitly account for relational dependencies and
 allow structural, political, and economic factors to be assessed
 simultaneously (Cranmer \& Desmarais, 2011; Schweitzer et al., 2009).
-For example, (Gutierrez, Adenso-Díaz, \& Lozano, 2020) applies ERGMs to
+For example, (Gutierrez, Adenso-Díaz, \& Lozano, 2020) applies ERGM to
 the global wheat trade and shows that reciprocity, GDP, and geographic
 proximity shape tie formation, while (Setayesh, Sourati Hassan Zadeh, \&
 Bahrak, 2022) finds that GDP, distance, diplomatic exchanges, and
@@ -375,9 +381,7 @@ enables a comprehensive representation of the global trade system as
 both structurally interdependent and quantitatively differentiated,
 capturing not only whether trade ties exist but also their relative
 economic significance. Additionally, most prior research focuses on
-region- or sector-specific cases, limiting global generalizability, and
-governance is commonly proxied using World Bank indicators, introducing
-variation that may affect comparability and interpretation.
+region- or sector-specific cases, limiting global generalizability.
 
 Therefore, the challenge is to develop a modeling approach that
 simultaneously:
@@ -517,14 +521,14 @@ characteristics, shaping the overall architecture of the global trade.
 \setlength{\arrayrulewidth}{0.05pt}
 \begin{longtable}{p{0.27\textwidth} p{0.29\textwidth} p{0.40\textwidth}}
 \caption{Hypotheses, Model Terms, and Theoretical Motivation}
- \\
+\label{tab:hypo_summary} \\
 \hline
-\textbf{Hypothesis} & \textbf{GERGM Term} & \textbf{Motivation} \\
+\textbf{Hypothesis} & \textbf{ERGM Term} & \textbf{Motivation} \\
 \hline
 \endfirsthead
 
 \hline
-\textbf{Hypothesis} & \textbf{GERGM Term} & \textbf{Motivation} \\
+\textbf{Hypothesis} & \textbf{ERGM Term} & \textbf{Motivation} \\
 \hline
 \endhead
 
@@ -539,7 +543,7 @@ Countries with more similar levels of regulatory quality are expected to engage 
 &
 \texttt{absdiff(regulatory\_quality)}
 &
-The \texttt{absdiff(regulatory\_quality)} term captures the tendency for countries with similar regulatory frameworks to form higher-value trade relationships. Similar regulatory standards reduce compliance costs, streamline approval processes, and increase operational compatibility, facilitating valuable bilateral trade
+The \texttt{absdiff(regulatory\_quality)} term captures the tendency for countries with similar regulatory frameworks to form higher-value trade relationships. Similar regulatory standards reduce compliance costs and increase operational compatibility, facilitating valuable bilateral trade
 \\
 \hline
 
@@ -557,7 +561,7 @@ Bilateral export relationships are expected to display reciprocity, such that hi
 &
 \texttt{mutual}
 &
-The \texttt{mutual} term captures the tendency for bilateral trade relationships to exhibit reciprocity, whereby higher export flows from one country are associated with higher return flows from its trading partner. Reciprocal trade reflects balanced exchange and mutual commitment, reducing asymmetric dependence and fostering more stable and sustainable trading relationships than those based on one-sided export flows
+The \texttt{mutual} term captures the tendency for bilateral trade relationships to exhibit reciprocity, whereby higher export flows from one country are associated with higher return flows from its trading partner. Reciprocal trade reflects balanced exchange and mutual commitment, reducing asymmetric dependence and fostering more stable and sustainable trading relationships.
 \\
 \hline
 
@@ -637,12 +641,12 @@ sections. The Dataset section outlines the sources, construction, and
 characteristics of the trade and governance data, including relevant
 network configurations. The Research Rationale section explains why the
 selected modelling approaches: MRQAP and GERGM, are well suited to the
-research questions and discusses potential alternative methods. The
-Results section presents and interprets the empirical findings from
-these models, comparing and evaluating the outcome in relation to the
-proposed hypotheses. Finally, the Conclusion provides the insights from
-the findings, highlights remaining challenges, and suggests paths for
-future research.
+research questions and discusses alternative methods. The Results
+section presents and interprets the empirical findings from these
+models, comparing and evaluating the outcome in relation to the proposed
+hypotheses. Finally, the Conclusion provides the insights from the
+findings, highlights remaining challenges, and suggests paths for future
+research.
 
 \section{Dataset}\label{dataset}
 
@@ -1160,7 +1164,7 @@ ERGM terms, which are defined in Table \ref{tbl_terms_testing}.
 
 \begin{longtable}{p{10cm} p{4cm}}
 \caption{ERGM Terms and Testing Overview}
- \\
+\label{tbl_terms_testing} \\
 \toprule
 \textbf{ERGM Terms} & \textbf{Testing} \\
 \midrule
@@ -1236,7 +1240,7 @@ for H2e.
 
 \begin{longtable}{p{4.5cm}| *{3}{>{\centering\arraybackslash}p{1.6cm}} | *{3}{>{\centering\arraybackslash}p{1.6cm}}}
 \caption{Comparison of ERGM Results for Trade Networks (Thresholds 75\% and 90\%)} 
- \\
+\label{tbl_ergm_comparison} \\
 \hline
 \multicolumn{1}{p{4.5cm}|}{Term} &
 \multicolumn{3}{c|}{Model Threshold 0.75} &
@@ -1303,29 +1307,33 @@ estimation across iterations.
 
 The results of the goodness of fit analysis of Model 1 (threshold 0.75)
 and Model 2 (threshold 0.9) are provided in Figure \ref{fig-mod-75} and
-Figure \ref{fig-mod-90}, indicating that both models accurately
-reproduce the sufficient statistics they condition on: for all included
-terms, the observed statistics fall well inside the boxplots of the
-simulated networks, so the models are internally consistent. However,
-Model 1 captures the overall network structure more closely than Model
-2.
+Figure \ref{fig-mod-90}. For all included terms, the observed statistics
+fall well within the boxplots of the simulated networks, so the models
+are internally consistent. However, Model 1 captures the overall network
+structure more closely than Model 2.
 
-For in-degree and out-degree, Model 1 roughly tracks the observed
-distributions but still underestimates how many countries have very few
-partners. This problem is stronger in Model 2, where the real network
-has more peripheral countries and a few dominant hubs than the
-simulations reproduce.
+For in-degree and out-degree distributions, both models show poor fit at
+the extreme with the sharp spike at degree 0. Model 1 roughly tracks the
+observed distributions but still underestimates how many countries have
+very few partners. This problem is stronger in Model 2, where the real
+network has more peripheral countries and fewer highly connected hubs
+than the model simulation predicts.
 
-Minimum geodesic distance diagnostics show that the observed network has
-many more very short paths, indicating a more tightly connected
-structure than either model implies. Edgewise shared partner diagnostics
-similarly reveal that both models struggle to reproduce the combination
-of high local clustering and short global distances, with the mismatch
-again larger for Model 2. This is consistent with using a higher
-threshold: keeping only the top 10\% of trade ties produces an extremely
-sparse, hub-dominated network, in which only the very strongest ties are
-kept, making our relatively generic ERGM cannot fully reproduce it,
-whereas the denser Model 1 network is easier to approximate.
+For minimum geodesic distance diagnostics, both models show a robust fit
+for most distances; the observed values are consistently within the
+simulated distributions. In contrast, edgewise shared partner
+diagnostics reveal that both models struggle with predicting lower
+numbers of shared partners, indicating that both models over-predict the
+number of connections that complete triangles or clusters compared to
+what is observed in the real data, with the mismatch again larger for
+Model 2. This is due to using a higher threshold: keeping only the top
+10\% of trade ties produces an extremely sparse network where ties are
+concentrated among only the strongest partners. The ERGM models, using
+relatively generic terms, struggles to replicate this high concentration
+of ties in hubs and the corresponding large number of completely
+isolated (peripheral).The 25\% threshold network is denser and more
+``average'' in its structure, making it a closer match to the general
+distributions that standard ERGM terms can approximate.
 
 \begin{figure}[H]
 
