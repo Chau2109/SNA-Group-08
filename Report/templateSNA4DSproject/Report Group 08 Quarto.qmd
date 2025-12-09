@@ -58,10 +58,6 @@ editor:
 #| label: load-mrqap-models
 #| include: false
 
-library(tibble)
-library(dplyr)
-library(ggplot2)
-
 mod0        <- readRDS("models/mod0.rds")
 mod1        <- readRDS("models/mod1.rds")
 mod_H1a     <- readRDS("models/mod_H1a.rds")
@@ -432,11 +428,10 @@ The remaining structure of the report is organized into four main sections. The 
 section outlines the sources, construction, and characteristics of the trade and
 governance data, including relevant network configurations. The Research Rationale section
 explains why the selected modelling approaches: MRQAP and GERGM, are well suited to the
-research questions and discusses alternative methods. The Results section
-presents and interprets the empirical findings from these models, comparing and evaluating
-the outcome in relation to the proposed hypotheses. Finally, the Conclusion provides the
-insights from the findings, highlights remaining challenges, and suggests paths for future
-research.
+research questions and discusses alternative methods. The Results section presents and
+interprets the empirical findings from these models, comparing and evaluating the outcome
+in relation to the proposed hypotheses. Finally, the Conclusion provides the insights from
+the findings, highlights remaining challenges, and suggests paths for future research.
 
 ## Dataset
 
@@ -745,20 +740,16 @@ governance similarity terms and the controls.
 #| tbl-cap: "MRQAP Model 1: Bilateral trade intensity regressed on governance similarity and controls."
 #| echo: false
 
-library(tibble)
-library(dplyr)
-
-# Build a coefficient table directly from the netlm object
-coef_mat <- cbind(
-  Estimate    = mod_H1a_H2a$coefficients,
-  `Pr(<=b)`   = mod_H1a_H2a$pleeq,
-  `Pr(>=b)`   = mod_H1a_H2a$pgreq,
-  `Pr(>=|b|)` = mod_H1a_H2a$pgreqabs
+# Build coefficient table directly from the netlm object
+coef_table <- data.frame(
+  Term        = mod_H1a_H2a$names,          # coefficient labels
+  Estimate    = as.numeric(mod_H1a_H2a$coefficients),
+  `Pr(<=b)`   = as.numeric(mod_H1a_H2a$pleeq),
+  `Pr(>=b)`   = as.numeric(mod_H1a_H2a$pgreq),
+  `Pr(>=|b|)` = as.numeric(mod_H1a_H2a$pgreqabs),
+  check.names = FALSE,
+  stringsAsFactors = FALSE
 )
-
-coef_table <- coef_mat |>
-  as.data.frame() |>
-  rownames_to_column("Term")
 
 knitr::kable(coef_table, digits = 3)
 ```
@@ -767,9 +758,6 @@ knitr::kable(coef_table, digits = 3)
 #| label: tbl-mrqap-fit
 #| tbl-cap: "Model fit statistics (MSE, R², AIC, BIC) for alternative MRQAP specifications."
 #| echo: false
-
-library(tibble)
-library(dplyr)
 
 # Helper function to compute fit stats from a netlm object
 get_fit_stats <- function(mod) {
@@ -797,7 +785,8 @@ fit1    <- get_fit_stats(mod1)
 fit_H1a <- get_fit_stats(mod_H1a)
 fit_H2  <- get_fit_stats(mod_H1a_H2a)
 
-model_fit <- tibble(
+# Build the table using base R
+model_fit <- data.frame(
   Model = c("Baseline (GDP)", 
             "Baseline + Inflation", 
             "H1a: +Reg. quality similarity", 
@@ -817,7 +806,8 @@ model_fit <- tibble(
   BIC = c(fit0$BIC,
           fit1$BIC,
           fit_H1a$BIC,
-          fit_H2$BIC)
+          fit_H2$BIC),
+  stringsAsFactors = FALSE
 )
 
 knitr::kable(model_fit, digits = 3)
@@ -826,27 +816,9 @@ knitr::kable(model_fit, digits = 3)
 @fig-mrqap-coefs plots the estimated coefficients (excluding the intercept). This
 highlights the relative magnitude and direction of the effects.
 
-```{r}
-#| label: fig-mrqap-coefs
-#| fig-cap: "Estimated coefficients from MRQAP Model 1 (excluding intercept)."
-#| echo: false
-#| warning: false
-#| message: false
-
-library(ggplot2)
-
-coef_plot <- coef_table |>
-  dplyr::filter(Term != "Intercept")
-
-ggplot(coef_plot, aes(x = Term, y = Estimate)) +
-  geom_col() +
-  coord_flip() +
-  labs(
-    x = NULL,
-    y = "Coefficient (change in trade intensity)",
-    title = "MRQAP Model 1 coefficients"
-  )
-```
+![Estimated coefficients from MRQAP Model 1 (excluding
+intercept).](Report-Group-08-Quarto_files/figure-pdf/fig-mrqap-coefs-1.pdf){#fig-mrqap-coefs
+fig-pos="H"}
 
 ### ERGM – Result for Research Question 2
 
@@ -986,17 +958,29 @@ iterations.
 #### Goodness of Fit
 
 The results of the goodness of fit analysis of Model 1 (threshold 0.75) and Model 2
-(threshold 0.9) are provided in Figure \ref{fig-mod-75} and Figure \ref{fig-mod-90}. For all included terms, the observed statistics fall well within the boxplots of the
-simulated networks, so the models are internally consistent. However, Model 1 captures the
-overall network structure more closely than Model 2.
+(threshold 0.9) are provided in Figure \ref{fig-mod-75} and Figure \ref{fig-mod-90}. For
+all included terms, the observed statistics fall well within the boxplots of the simulated
+networks, so the models are internally consistent. However, Model 1 captures the overall
+network structure more closely than Model 2.
 
-For in-degree and out-degree distributions, both models show poor fit at the extreme with the sharp spike at degree 0. Model 1 roughly tracks the observed distributions but still
+For in-degree and out-degree distributions, both models show poor fit at the extreme with
+the sharp spike at degree 0. Model 1 roughly tracks the observed distributions but still
 underestimates how many countries have very few partners. This problem is stronger in
-Model 2, where the real network has more peripheral countries and fewer highly connected hubs than the model simulation predicts.
+Model 2, where the real network has more peripheral countries and fewer highly connected
+hubs than the model simulation predicts.
 
-For minimum geodesic distance diagnostics, both models show a robust fit for most distances; the observed values are consistently within the simulated distributions. In contrast, edgewise shared partner diagnostics reveal that both models struggle with predicting lower numbers of shared partners, indicating that both models over-predict the number of connections that complete triangles or clusters compared to what is observed in the real data, with the
-mismatch again larger for Model 2. This is due to using a higher threshold:
-keeping only the top 10% of trade ties produces an extremely sparse network where ties are concentrated among only the strongest partners. The ERGM models, using relatively generic terms, struggles to replicate this high concentration of ties in hubs and the corresponding large number of completely isolated (peripheral).The 25% threshold network is denser and more "average" in its structure, making it a closer match to the general distributions that standard ERGM terms can approximate.
+For minimum geodesic distance diagnostics, both models show a robust fit for most
+distances; the observed values are consistently within the simulated distributions. In
+contrast, edgewise shared partner diagnostics reveal that both models struggle with
+predicting lower numbers of shared partners, indicating that both models over-predict the
+number of connections that complete triangles or clusters compared to what is observed in
+the real data, with the mismatch again larger for Model 2. This is due to using a higher
+threshold: keeping only the top 10% of trade ties produces an extremely sparse network
+where ties are concentrated among only the strongest partners. The ERGM models, using
+relatively generic terms, struggles to replicate this high concentration of ties in hubs
+and the corresponding large number of completely isolated (peripheral).The 25% threshold
+network is denser and more "average" in its structure, making it a closer match to the
+general distributions that standard ERGM terms can approximate.
 
 ![The Goodness of Fit in the stimulated networks with threshold 0.75. The minimum geodesic
 distance, in degree, out degree and edge-wise shared partners are
