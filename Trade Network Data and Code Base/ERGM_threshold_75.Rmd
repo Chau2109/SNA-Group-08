@@ -99,7 +99,7 @@ print(edge_list)
 summary(edge_list$weight_millions)
 
 # Density plot
-# pdf("figures/density_trade_values.pdf", width = 7, height = 5)
+#pdf("density_trade_values.pdf", width = 7, height = 5)
 
 log_trade_value <- log1p(edge_list$weight_millions)
 
