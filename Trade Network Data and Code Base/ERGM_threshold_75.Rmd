@@ -98,26 +98,41 @@ print(edge_list)
 #Summary statistics of edge weights
 summary(edge_list$weight_millions)
 
-# Plot the distribution of edge weights
-
-hist(
-  edge_list$weight_millions,
-  breaks = 100,
-  main   = "Distribution of Trade Values (millions USD)",
-  xlab   = "Trade Value in millions USD",
-  col    = "grey"
-)
 # Density plot
+# pdf("figures/density_trade_values.pdf", width = 7, height = 5)
 
+log_trade_value <- log1p(edge_list$weight_millions)
 
-plot(density(edge_list$weight_millions))
+p75 <- quantile(log_trade_value, 0.75, na.rm = TRUE)
+p90 <- quantile(log_trade_value, 0.90, na.rm = TRUE)
 
-boxplot(
-  edge_list$weight_millions,
-  horizontal = FALSE,
-  main       = "Boxplot of Trade Values"
+plot(
+  density(log_trade_value, na.rm = TRUE),
+  main = "Density of Trade Values (log scale)",
+  xlab = "Trade Value (millions USD, log1p)",
+  lwd  = 2
 )
 
+abline(v = p75, col = "red", lwd = 2, lty = 2)
+abline(v = p90, col = "darkgreen", lwd = 2, lty = 2)
+
+text(
+  x = p75,
+  y = max(density(log_trade_value)$y) * 0.9,
+  labels = "75th percentile",
+  pos = 4,
+  col = "red"
+)
+
+text(
+  x = p90,
+  y = max(density(log_trade_value)$y) * 0.8,
+  labels = "90th percentile",
+  pos = 4,
+  col = "darkgreen"
+)
+
+#dev.off()
 ```
 
 ```{r threshold}
