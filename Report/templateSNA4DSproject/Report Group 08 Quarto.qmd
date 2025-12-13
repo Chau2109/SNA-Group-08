@@ -682,22 +682,27 @@ analysis of international trade patterns than alternative approaches.
 ### MRQAP – Results for Research Question 1
 
 We estimate a set of MRQAP models with bilateral trade intensity between country pairs as
-the dependent network to answer Research Question 1. In line with recent MRQAP studies on
-trade in lithium-ion batteries and rare earth elements [@noauthor_structural_nodate;
-@hu_impacts_2023], the models are specified stepwise. Model 0 only includes the dyadic
-average of GDP (GDP_mean); Model 1 adds inflation dissimilarity; Model H1a adds regulatory
-quality similarity; and the final Model 1 MRQAP (H1a+H2a) adds corruption control
-similarity. All models generate network-robust p-values using 5,000 QAP permutations.
+the dependent network to answer Research Question 1. To align with the subsequent GERGM
+analysis, the dependent variable is the log-transformed trade value, min-max scaled to the
+range $[0, 1]$ In line with recent MRQAP studies on trade in lithium-ion batteries and
+rare earth elements [@noauthor_structural_nodate; @hu_impacts_2023], the models are
+specified stepwise. Model 0 only includes the dyadic average of GDP (GDP_mean); Model 1
+adds inflation dissimilarity; Model H1a adds regulatory quality similarity; and the final
+Model 1 MRQAP (H1a+H2a) adds corruption control similarity. All models generate
+network-robust p-values using 5,000 QAP permutations.
 
 The baseline results highlight the dominant role of economic size. Model 0 already
 explains around half of the variance in bilateral trade intensity (R² \~ 0.50), and the
-GDP_mean coefficient is large, positive, and highly significant (\~0.31), consistent with
-gravity-model evidence that higher-GDP countries trade more intensively with each other
-[@leitao_gravity_2024]. A small negative coefficient on Inflation_diff with a marginal
-two-tailed permutation p-value (\~ 0.07–0.09) indicates that dyads with more similar
-inflation rates tend to trade slightly more when inflation dissimilarity is added in
-Model 1. However, the overall fit improves only modestly: MSE decreases and R² increases
-slightly, while AIC and BIC change little (@tbl-mrqap-fit).
+GDP_mean coefficient is large, positive, and highly significant (\~0.31) because the
+dependent variable is scaled $[0, 1]$, this coefficient indicates that a one-unit increase
+in average GDP leads to an increase in trade intensity equivalent to 31% of the total
+observed range of global trade. This is consistent with gravity-model evidence that
+higher-GDP countries trade more intensively with each other [@leitao_gravity_2024]. A
+small negative coefficient on Inflation_diff with a marginal two-tailed permutation
+p-value (\~ 0.07–0.09) indicates that dyads with more similar inflation rates tend to
+trade slightly more when inflation dissimilarity is added in Model 1. However, the overall
+fit improves only modestly: MSE decreases and R² increases slightly, while AIC and BIC
+change little (@tbl-mrqap-fit).
 
 We add regulatory quality similarity (RegQual_similarity) to Model H1a in order to test
 H1a. The Worldwide Governance Indicators, which report scores on a -2.5 to 2.5 scale, are
