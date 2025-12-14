@@ -472,7 +472,7 @@ fit.mod7 <- ergm::gof(mod7)
 snafun::stat_plot_gof(fit.mod7)
 ```
 
-```{r Testing another ERGM models}
+```{r Final model}
 set.seed(1234)
 mod8 <- ergm::ergm(trade_network ~ edges + 
                      absdiff("regulatory_quality") + 

@@ -289,7 +289,7 @@ dim(node_covariates)
 dim(trade_matrix_gergm)
 ```
 
-```{r}
+```{r MRQAP model}
 # Running Research Question 1 
 #prepare for mrqap
 
@@ -344,7 +344,7 @@ summary(mod1)
 
 ```
 
-```{r}
+```{r MRQAP model}
 
 mod_H1a <- sna::netlm(
   y         = trade_matrix_mrqap,

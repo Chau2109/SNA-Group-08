@@ -858,8 +858,7 @@ knitr::kable(model_fit, digits = 3)
 highlights the relative magnitude and direction of the effects.
 
 ![Estimated coefficients from MRQAP Model 1 (excluding
-intercept)](Report-Group-08-Quarto_files/figure-pdf/fig-mrqap-coefs-1.pdf){#fig-mrqap-coefs
-fig-pos="H" width="85%"}
+intercept)](figures/fig-mrqap-coefs-1.pdf){#fig-mrqap-coefs fig-pos="H" width="85%"}
 
 ### ERGM – Result for Research Question 2
 
@@ -1029,7 +1028,7 @@ for (i in 1:n) {
 #### Goodness of Fit
 
 The results of the goodness-of-fit analysis for Model 1 (threshold 0.75) are provided in
-@fig-mod-5. For all included terms, the observed statistics fall well within the boxplots
+@fig-mod-75. For all included terms, the observed statistics fall well within the boxplots
 of the simulated networks, indicating that Model 1 reproduces the sufficient statistics it
 conditions on and is internally consistent. For comparison, the goodness-of-fit results
 for Model 2 are reported in Appendix @sec-gof-90.
@@ -1061,6 +1060,9 @@ generic terms struggle to reproduce both the strong hub concentration and the la
 of completely isolated (peripheral) countries observed in the data. By contrast, the 25%
 threshold network is denser and more “average” in its structure, making it a closer match
 to the general distributions that standard ERGM terms are better able to approximate.
+
+For transparency and reproducibility, Appendix @sec-info
+maps each reported result to its corresponding code file and output location, allowing readers to quickly locate the underlying code and outputs.
 
 ## Conclusion
 
@@ -1148,6 +1150,8 @@ structure we observed in the top 10% of trade relationships suggest that differe
 mechanisms may govern intense versus moderate trade ties, calling for more nuanced
 threshold analysis or mixture models.
 
+{{< pagebreak >}}
+
 ## References
 
 ::: {#refs}
@@ -1178,6 +1182,39 @@ for (i in 1:n) {
 ### Appendix C: The Goodness of Fit in the stimulated networks with threshold 0.9. The minimum geodesic distance, in degree, out degree and edge-wise shared partners are captured {#sec-gof-90}
 
 ![](figures/gof_combined_plot_90.png){fig-pos="H" width="85%" fig-align="center"}
+
+### Appendix D: Mapping of results to code files and saved outputs {#sec-info}
+
+\setlength{\arrayrulewidth}{0.05pt}
+\begin{longtable}{p{0.24\textwidth} p{0.10\textwidth} p{0.58\textwidth}}
+\caption{Mapping of results to code files and saved outputs, all information can be found at https://github.com/Chau2109/SNA-Group-08.git}\label{tbl_code_map} \\
+\hline
+\textbf{Result / Output} & \textbf{Research Question} & \textbf{Code location} \\
+\hline
+\endfirsthead
+
+\hline
+\textbf{Result / Output} & \textbf{Research Question} & \textbf{Code location} \\
+\hline
+\endhead
+
+\hline
+\endfoot
+
+\hline
+\endlastfoot
+
+\textbf{MRQAP results} & RQ1 & \texttt{Trade Network Data and Code Base/MRQAP.Rmd} (chunk \texttt{MRQAP model}), fitted models saved in \texttt{models/mod0.rds}, \texttt{models/mod1.rds}, \texttt{models/mod\_H1a.rds}, and \texttt{models/mod\_H1a\_H2a.rds}. \\
+\hline
+\textbf{ERGM results (threshold 0.75)} & RQ2 & \texttt{Trade Network Data and Code Base/ERGM\_threshold\_75.Rmd} (chunk \texttt{Final model}); fitted model stored at \texttt{Report/templateSNA4DSproject/models/mod\_final\_75.rds}\\
+\hline
+\textbf{ERGM results (threshold 0.9)} & RQ2 & \texttt{Trade Network Data and Code Base/ERGM\_threshold\_90.Rmd} (chunk \texttt{Final model}); fitted model stored at \texttt{Report/templateSNA4DSproject/models/mod3\_ergm\_90.rds}. \\
+\hline
+\textbf{All plots} & RQ1 and RQ2 &  PNG and PDF assets used in the report saved under \texttt{Report/templateSNA4DSproject/figures/} \\
+\hline
+\end{longtable}
+
+This roadmap links each reported result to the script, chunk label, and stored artifacts that generated it, so readers can quickly locate the underlying code and outputs.
 
 {{< pagebreak >}}
 
