@@ -5,7 +5,7 @@ output: html_document
 
 ```{r}
 #Install all packages before running
-#install.packages(c("here", "readr", "readxl", "data.table", "snafun", "igraph", "ergm"))
+install.packages(c("here", "readr", "readxl", "data.table", "snafun", "igraph", "ergm"))
 #dependencies = TRUE, force = TRUE)
 ```
 ## Data preparation
@@ -306,6 +306,15 @@ snafun::g_summary(trade_network)
 plot(trade_network)
 
 ```
+```{r}
+snafun::plot(trade_network,
+             edge.curved = .1)
+            layout()
+```
+
+
+
+
 
 
 ```{r}

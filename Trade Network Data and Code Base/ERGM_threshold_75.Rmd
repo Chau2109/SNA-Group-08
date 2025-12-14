@@ -335,6 +335,49 @@ network::set.vertex.attribute(
 trade_network
 ```
 
+```{r}
+# Histogram of trade distribution
+ggplot2::ggplot(edge_list, ggplot2::aes(x = log10(weight_millions))) +
+  ggplot2::geom_histogram(bins = 30, fill = "steelblue", color = "white", alpha = 0.9) +
+  ggplot2::labs(title = "Distribution of Trade Values (Log Scale)",
+                x = "Log10(Trade Value in Millions USD)",
+                y = "Frequency") +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 14, face = "bold"),
+                 panel.grid.major = ggplot2::element_line(color = "gray90"),
+                 panel.grid.minor = ggplot2::element_blank())
+
+ggplot2::ggsave("trade_distribution.pdf", width = 8, height = 5, dpi = 300)
+```
+```{r}
+# Top 10 bilateral trade partnerships
+top_partnerships <- edge_list[order(-weight_millions)][1:10]
+top_partnerships[, partnership := paste(from, "→", to)]
+top_partnerships[, trade_billions := weight_millions / 1000]
+
+ggplot2::ggplot(top_partnerships, ggplot2::aes(x = reorder(partnership, weight_millions), y = trade_billions)) +
+  ggplot2::geom_col(fill = "coral", alpha = 0.8) +
+  ggplot2::coord_flip() +
+  ggplot2::labs(
+    title = "Top 10 Bilateral Trade Partnerships (2018)",
+    subtitle = "Largest individual trade flows between country pairs",
+    x = NULL,
+    y = "Trade Value (Billion USD)"
+  ) +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(
+    plot.title = ggplot2::element_text(hjust = 0, face = "bold", size = 14),
+    plot.subtitle = ggplot2::element_text(hjust = 0, size = 10, color = "gray40"),
+    axis.text.y = ggplot2::element_text(size = 10),
+    axis.text.x = ggplot2::element_text(size = 10),
+    axis.title = ggplot2::element_text(size = 11, face = "bold"),
+    panel.grid.major.y = ggplot2::element_blank()
+  )
+
+ggplot2::ggsave("top_partners.pdf", width = 8, height = 5, dpi = 300)
+```
+
+
 
 ```{r Build baseline ERGM models - Exogenous terms}
 mod_baseline <- ergm::ergm(trade_network ~ edges + 
@@ -347,6 +390,8 @@ mod_baseline <- ergm::ergm(trade_network ~ edges +
 summary(mod_baseline)
 
 ```
+
+
 
 ```{r Build more complicated ERGM models - Dyadic Dependent}
 set.seed(1234)
