@@ -1,26 +1,28 @@
 % Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
 ]{article}
-
+\usepackage{xcolor}
+\usepackage[left=1in,right=1in,top=1.1in,bottom=1.1in,heightrounded]{geometry}
 \usepackage{amsmath,amssymb}
-\usepackage{setspace}
+\setcounter{secnumdepth}{5}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
-\ifPDFTeX\else  
-    % xetex/luatex font selection
+\ifPDFTeX\else
+  % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -28,6 +30,7 @@
   \usepackage[]{microtype}
   \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
+\usepackage{setspace}
 \makeatletter
 \@ifundefined{KOMAClassName}{% if non-KOMA class
   \IfFileExists{parskip.sty}{%
@@ -38,10 +41,6 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
-\usepackage{xcolor}
-\usepackage[left=1in,right=1in,top=1.1in,bottom=1.1in,heightrounded]{geometry}
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-\setcounter{secnumdepth}{5}
 % Make \paragraph and \subparagraph free-standing
 \makeatletter
 \ifx\paragraph\undefined\else
@@ -67,8 +66,7 @@
 \makeatother
 
 
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -93,6 +91,8 @@
 % Set default figure placement to htbp
 \def\fps@figure{htbp}
 \makeatother
+
+
 % definitions for citeproc citations
 \NewDocumentCommand\citeproctext{}{}
 \NewDocumentCommand\citeproc{mm}{%
@@ -126,6 +126,18 @@
 \newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
 
 \usepackage{array}
 \usepackage{pdfpages}
@@ -179,11 +191,9 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-
 \usepackage{bookmark}
-
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
+\urlstyle{same}
 \hypersetup{
   pdftitle={SNA4DS Project - Report Submission 2},
   pdfauthor={Leon Boeren - Noud van Summeren - Chau Nguyen - Paritosh Singh - Silvia Petrova},
@@ -206,7 +216,6 @@
 \author{Leon Boeren - Noud van Summeren - Chau Nguyen - Paritosh Singh -
 Silvia Petrova}
 \date{2025-11-14}
-
 \begin{document}
 \maketitle
 
@@ -227,7 +236,7 @@ Silvia Petrova}
 \setlength{\arrayrulewidth}{0.05pt}
 \begin{longtable}{p{0.28\textwidth} p{0.68\textwidth}}
 \caption{Definitions of Key Terms}
- \\
+\label{tab:key-terms-wgi} \\
 \hline
 \textbf{Term} & \textbf{Definition} \\
 \hline
@@ -293,8 +302,29 @@ Control of Corruption captures perceptions of the extent to which public power i
 
 \section{Abstract}\label{abstract}
 
-Chau What is the main topic you are addressing? What are your research
-questions and hypotheses? What are your results and the main conclusion?
+This study investigates whether similarities in governance
+characteristics influence bilateral trade relationships and how
+governance interacts with structural dependencies in the global trade
+network. Using international export data for 181 countries in 2018, two
+research questions are addressed: whether governance similarity affects
+bilateral trade intensity, and how governance similarity and endogenous
+network structures jointly shape global export relationships. The
+analysis combines Multiple Regression Quadratic Assignment Procedure
+(MRQAP) models with Exponential Random Graph Models (ERGMs), enabling
+the joint assessment of dyadic attributes and network interdependencies.
+The MRQAP results indicate that bilateral trade intensity is primarily
+driven by economic fundamentals, particularly market size, while
+similarities in regulatory quality and corruption control do not exhibit
+statistically significant effects once economic factors are controlled
+for. In contrast, the ERGM analysis demonstrates that network structure
+plays a central role in shaping strong trade ties. Reciprocity,
+clustering, and hub dominance strongly characterize the global trade
+network, with countries that import large volumes acting as key
+attractors. Governance similarity shows only a modest association with
+the presence of strong trade ties and is small relative to structural
+and economic drivers. Overall, the findings suggest that global trade
+patterns in 2018 were shaped more by economic scale and self-reinforcing
+network dynamics than by institutional alignment.
 
 \section{Introduction}\label{introduction}
 
@@ -512,7 +542,7 @@ characteristics, shaping the overall architecture of the global trade.
 \setlength{\arrayrulewidth}{0.05pt}
 \begin{longtable}{p{0.27\textwidth} p{0.29\textwidth} p{0.40\textwidth}}
 \caption{Hypotheses, Model Terms, and Theoretical Motivation}
- \\
+\label{tab:hypo_summary} \\
 \hline
 \textbf{Hypothesis} & \textbf{ERGM Term} & \textbf{Motivation} \\
 \hline
@@ -569,7 +599,7 @@ The \texttt{dgwesp(decay = 0.25, fixed = TRUE, type="OTP")} term captures the te
 Countries that already receive high levels of imports from many partners are likely to become attractive trade destinations, making others more likely to export to them
 &
 \texttt{nodeicov("log\_total\_imports")}
-\texttt{nodeicov("log\_total\_imports")}
+
 &
 The \texttt{nodeicov("log\_total\_imports")} term captures the tendency for countries with high import volumes to attract additional export ties. Large import markets signal strong demand and institutional reliability, lowering perceived risks for new exporters and generating self-reinforcing patterns in which highly connected import destinations continue to receive a disproportionate share of global exports
 \\
@@ -651,86 +681,73 @@ governance quality across countries.
 
 The primary dataset used is the International Trade Database obtained
 from Kaggle, which is compiled from UN Comtrade through the World
-Integrated Trade Solution (WITS) platform. UN Comtrade is the official
-repository of international trade statistics, maintained by the United
-Nations Statistics Division (UNSD), and serves governments, academia,
-and research institutions worldwide (UN Comtrade, 2025). It covers more
-than 99\% of the world's merchandise trade and provides country-reported
-data on international trade flows.
+Integrated Trade Solution (WITS) platform. UN Comtrade, maintained by
+the United Nations Statistics Division, is the primary global repository
+of official merchandise trade statistics and covers over 99\% of
+worldwide trade flows (UN Comtrade, 2025).
 
 The dataset contains annual export values (measured in thousands of U.S.
 dollars) from 1988 to 2021, recording exports from a reporting country
 \emph{i} to a partner country \emph{j} in year \emph{t}. Each
-observation represents the total export value of all goods shipped from
+observation represents the export value of all goods shipped from
 country \emph{i} to country \emph{j} in a given year. For this study,
 the analysis focuses on data from 2018, the year immediately preceding
 the COVID-19 pandemic, as it ensures the widest data availability and
 comparability across countries in terms of governance, economic
-performance, and trade facilitation indicators prior to the global
-disruptions of the pandemic.
+performance prior to the global disruptions of the pandemic.
 
 \subsubsection{Supplementary Data}\label{supplementary-data}
 
-Sources To complement the trade network with country-level attributes,
-three supplementary datasets from the World Bank's open data
-repositories were integrated, all extracted for the year 2018.
+Three additional World Bank datasets were merged to enrich the trade
+network with country-level attributes, all extracted for 2018.
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
+\begin{itemize}
 \item
-  The Doing Business Indicators (DBI) provide detailed measures of trade
-  facilitation (World Bank, 2020). This dataset includes information on
-  border and documentary compliance times and costs for both imports and
-  exports, as well as the overall \emph{Trading Across Borders} score.
-  These indicators reflect the efficiency and costliness of customs
-  procedures and border management in each country.
+  The Doing Business Indicators provide measures of trade facilitation,
+  including border and documentary compliance times and costs, as well
+  as the Trading Across Borders score (World Bank, 2020). These
+  indicators capture the efficiency of customs procedures and border
+  management.
 \item
-  The World Development Indicators (WDI) contain key macroeconomic
-  measures such as GDP (current USD), GDP growth rate, and inflation
-  rate (World Bank, 2025). These indicators offer insights into each
-  country's level of economic development, performance, and stability.
+  The World Development Indicators supply key macroeconomic measures
+  such as GDP, GDP growth, and inflation (World Bank, 2025).
 \item
-  The Worldwide Governance Indicators (WGI) capture institutional
-  quality across several governance dimensions, including government
-  effectiveness, regulatory quality, rule of law, and control of
-  corruption (World Bank, 2024). These measures describe the strength of
-  governance systems that may influence trade relationships,
-  institutional reliability, and policy effectiveness.
-\end{enumerate}
+  The Worldwide Governance Indicators measure institutional quality
+  across several dimensions, including government effectiveness,
+  regulatory quality, rule of law, and control of corruption (World
+  Bank, 2024).
+\end{itemize}
 
 \subsection{Data Integration and
 cleaning}\label{data-integration-and-cleaning}
 
-All datasets were joined using the country code (ISO3) as the unique key
-identifier. The trade data were filtered to include only valid reporting
-and partner countries, excluding aggregate or non-sovereign entities
-such as World, European Union, and Other Asia, etc.
+All datasets were joined using ISO3 country codes as unique identifiers.
+Trade data were filtered to include only valid reporting and partner
+countries, excluding aggregate or non-sovereign entities such as the
+World, the European Union, and ``Other Asia.''
 
 The World Bank datasets were combined into a single table using inner
-joins, ensuring that only countries present across all three sources
-were retained. Duplicate columns were removed and variable names were
-standardized for clarity.~
+joins, retaining only countries present in all three sources. Duplicate
+columns were removed, and variable names were standardized for clarity.
 
-Finally, the cleaned World Bank data were merged with the trade dataset
-to construct two key network components:
+The cleaned World Bank data were then merged with the trade dataset to
+construct two network components:
 
 \begin{itemize}
 \item
-  A weighted directed edge list: representing exports from country i to
-  country j. The edge attribute captures the trade value (measured in
-  thousands of U.S. dollars), indicating the intensity or magnitude of
-  the trade relationship between two countries. Each edge corresponds to
-  a direct trade flow from an exporting country (reporter) to an
-  importing country (partner).
+  A \textbf{weighted directed edge list}, representing exports from
+  country \emph{i} to country \emph{j}. Edge weights capture export
+  value (in thousands of U.S. dollars), indicating the magnitude of each
+  trade relationship.
 \item
-  A vertex attribute table: in which each vertex represents a country.
-  This table includes country-specific attributes such as economic
-  indicators (GDP, inflation rate, etc), governance quality (government
-  effectiveness, regulatory quality, etc), and trade facilitation
-  measures (border time and cost for export and import).
+  A \textbf{vertex attribute table}, where each vertex represents a
+  country and includes economic indicators (GDP, inflation, etc.),
+  governance measures (government effectiveness, regulatory quality,
+  etc.), and trade facilitation variables (border time and costs for
+  exports and imports).
 \end{itemize}
 
-The resulting dataset covers 181 countries with 18940 trade links in
+The resulting dataset covers 181 countries and 18,940 trade links in
 2018.
 
 \subsection{Descriptive Statistics}\label{descriptive-statistics}
@@ -908,6 +925,47 @@ prominently as a destination for Mexican and Canadian exports, while
 Hong Kong serves as a crucial intermediary for Chinese trade. Asian
 manufacturing networks (Korea, Japan, China) and significant trade
 imbalances characterize global commerce.
+
+\subsection{Thresholding}\label{thresholding}
+
+To convert the weighted trade network into a binary model, thresholding
+was applied to retain only the strongest trade ties. Two percentile
+cut-offs were evaluated: the 75th and 90th percentile of the
+log-transformed trade-value distribution.
+
+The distribution of the edge weights is highly right-skewed, with a
+small number of extremely large trade relationships dominating the
+network.
+
+Thresholding is necessary because ERGM estimation becomes unstable when
+edge weights are continuous, highly skewed, and include extreme
+outliers. Using a percentile-based cut-off converts the network into a
+sparse binary structure, allowing the model to focus on the presence of
+meaningful trade ties rather than noise from minor exchanges
+
+\begin{itemize}
+\item
+  The 75\% threshold retains a broader set of significant trade
+  relations, preserving network connectivity.
+\item
+  The 90\% threshold isolates only the strongest trade partnerships,
+  reducing density substantially and highlighting core trade clusters.
+\end{itemize}
+
+Thresholding introduces selection bias by disproportionately removing
+weaker, but potentially economically important trade relationships.
+Countries with smaller economies or lower reporting capacity are more
+likely to fall below the threshold, causing:
+
+\begin{itemize}
+\item
+  Underrepresentation of lower-income or peripheral countries,
+\item
+  Inflated network centralization around major economies,
+\item
+  Distortion of reciprocity or clustering patterns, which may appear
+  stronger simply because only large flows remain.
+\end{itemize}
 
 \section{Research Rationale}\label{research-rationale}
 
@@ -1174,7 +1232,7 @@ ERGM terms, which are defined in Table \ref{tbl_terms_testing}.
 
 \begin{longtable}{p{10cm} p{4cm}}
 \caption{ERGM Terms and Testing Overview}
- \\
+\label{tbl_terms_testing} \\
 \toprule
 \textbf{ERGM Terms} & \textbf{Testing} \\
 \midrule
@@ -1250,7 +1308,7 @@ for H2e.
 
 \begin{longtable}{p{4.5cm}| *{3}{>{\centering\arraybackslash}p{1.6cm}} | *{3}{>{\centering\arraybackslash}p{1.6cm}}}
 \caption{Comparison of ERGM Results for Trade Networks (Thresholds 75\% and 90\%)} 
- \\
+\label{tbl_ergm_comparison} \\
 \hline
 \multicolumn{1}{p{4.5cm}|}{Term} &
 \multicolumn{3}{c|}{Model Threshold 0.75} &

@@ -76,6 +76,7 @@ wb_combined <- wb_combined[country_code %in% trade_countries]
 dim(wb_combined)
 
 ```
+
 ```{r building_edges}
 # Edge list with numeric weights is Export Value between 2 countries measured in 1000 USD
 edge_list <- data.table::data.table(
@@ -193,6 +194,7 @@ countries <- sort(intersect(edge_countries, vertex_countries))
 
 length(countries)  # just to see how many
 ```
+
 ```{r adjacency_matrix}
 # Initialize matrix with zeros
 trade_matrix <- matrix(
