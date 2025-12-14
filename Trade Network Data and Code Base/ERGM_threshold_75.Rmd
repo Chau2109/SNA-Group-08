@@ -76,7 +76,6 @@ wb_combined <- wb_combined[country_code %in% trade_countries]
 dim(wb_combined)
 
 ```
-
 ```{r building_edges}
 # Edge list with numeric weights is Export Value between 2 countries measured in 1000 USD
 edge_list <- data.table::data.table(
@@ -135,6 +134,61 @@ text(
 
 #dev.off()
 ```
+
+```{r}
+# Histogram of trade distribution
+x <- log10(edge_list$weight_millions)
+
+q75 <- stats::quantile(x, 0.75, na.rm = TRUE)
+q90 <- stats::quantile(x, 0.90, na.rm = TRUE)
+
+p <- ggplot2::ggplot(edge_list, ggplot2::aes(x = log10(weight_millions))) +
+  ggplot2::geom_histogram(bins = 30, fill = "steelblue", color = "white", alpha = 0.9) +
+  ggplot2::geom_vline(xintercept = q75, linetype = "dashed", linewidth = 0.8) +
+  ggplot2::geom_vline(xintercept = q90, linetype = "dashed", linewidth = 0.8) +
+  ggplot2::labs(title = "Distribution of Trade Values (Log Scale)",
+                x = "Log10(Trade Value in Millions USD)",
+                y = "Frequency") +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, size = 14, face = "bold"),
+                 panel.grid.major = ggplot2::element_line(color = "gray90"),
+                 panel.grid.minor = ggplot2::element_blank()) +
+  ggplot2::annotate("text", x = q75, y = 50, label = "75th", color = "red", size = 4, angle = 0, hjust = 1.2) +
+  ggplot2::annotate("text", x = q90, y = 50, label = "90th", color = "red", size = 4, angle = 0, hjust = 1.2)
+
+ggplot2::ggsave("trade_distribution.png", plot = p, width = 8, height = 5, dpi = 300)
+
+
+```
+
+```{r}
+# Top 10 bilateral trade partnerships
+top_partnerships <- edge_list[order(-weight_millions)][1:10]
+top_partnerships[, partnership := paste(from, "→", to)]
+top_partnerships[, trade_billions := weight_millions / 1000]
+
+ggplot2::ggplot(top_partnerships, ggplot2::aes(x = reorder(partnership, weight_millions), y = trade_billions)) +
+  ggplot2::geom_col(fill = "coral", alpha = 0.8) +
+  ggplot2::coord_flip() +
+  ggplot2::labs(
+    title = "Top 10 Bilateral Trade Partnerships (2018)",
+    subtitle = "Largest individual trade flows between country pairs",
+    x = NULL,
+    y = "Trade Value (Billion USD)"
+  ) +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(
+    plot.title = ggplot2::element_text(hjust = 0, face = "bold", size = 14),
+    plot.subtitle = ggplot2::element_text(hjust = 0, size = 10, color = "gray40"),
+    axis.text.y = ggplot2::element_text(size = 10),
+    axis.text.x = ggplot2::element_text(size = 10),
+    axis.title = ggplot2::element_text(size = 11, face = "bold"),
+    panel.grid.major.y = ggplot2::element_blank()
+  )
+
+ggplot2::ggsave("top_partners.png", width = 8, height = 5, dpi = 300)
+```
+
 
 ```{r threshold}
 # Choose 3rd Quartile as threshold
@@ -321,6 +375,8 @@ for (attr_name in colnames(covariate_clean)) {
 }
 
 network::list.vertex.attributes(trade_network)
+
+
 ```
 
 ```{r}
@@ -350,6 +406,7 @@ network::set.vertex.attribute(
   imports_full$log_total_imports
 )
 trade_network
+
 ```
 
 

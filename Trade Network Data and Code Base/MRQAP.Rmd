@@ -205,11 +205,11 @@ diag(trade_matrix_raw) <- 0   # no self-trade
 class(trade_matrix_raw)  # "matrix"
 dim(trade_matrix_raw)
 
-# 1e. Log-transform and scale to [0,1] for GERGM
+# 1e. Log-transform and scale 
 X_log    <- log1p(trade_matrix_raw)
 X_scaled <- (X_log - min(X_log)) / (max(X_log) - min(X_log))
 
-trade_matrix <- X_scaled   # this is what we’ll feed into GERGM
+trade_matrix <- X_scaled   
 
 ```
 
@@ -290,7 +290,7 @@ dim(trade_matrix_gergm)
 ```
 
 ```{r}
-# Running Research Question 1 - H1  (Silvia)
+# Running Research Question 1 
 #prepare for mrqap
 
 # Keep countries in consistent order
@@ -414,6 +414,7 @@ mod_H1a_H2a$names <- c(
 summary(mod_H1a_H2a)
 
 ```
+
 ```{r}
 # After all models have been fitted:
 saveRDS(mod0,         "models/mod0.rds")
